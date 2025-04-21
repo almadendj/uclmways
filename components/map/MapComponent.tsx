@@ -1567,8 +1567,6 @@ const CampusMap: React.FC<MapProps> = ({
   }, [debug, debugInfo]);
 
   const renderMobileUI = () => {
-    if (!mobileMode) return null;
-
     return (
       <>
         {/* Mobile Header */}

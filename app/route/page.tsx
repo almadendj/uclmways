@@ -7,11 +7,12 @@ import Head from 'next/head';
 
 import { parseRouteFromUrl } from '@/components/map/qrCodeUtils'; // Adjust this path as needed
 import { saveEndNode } from '@/components/map/localStorage';
+import MapComponent from '@/components/map/MapComponent';
 
 // Import map component dynamically to avoid SSR issues
-const MapComponent = dynamic(() => import('@/components/map/MapComponent'), {
-  ssr: false,
-});
+// const MapComponent = dynamic(() => import('@/components/map/MapComponent'), {
+//   ssr: false,
+// });
 
 // Loading screen component
 const LoadingScreen = () => (
@@ -150,7 +151,7 @@ export default function RoutePage() {
       setError('Failed to load route. Please try again.');
       setLoading(false);
     }
-  }, [searchParams]);
+  }, [searchParams, debugInfoRef]);
 
   if (loading) return <LoadingScreen />;
   if (error) return <ErrorScreen error={error} />;
@@ -165,9 +166,7 @@ export default function RoutePage() {
         />
       </Head>
 
-      {readyToStart ? (
-        <RouteReadyScreen startRoute={() => setReadyToStart(false)} />
-      ) : (
+      {!!routeData && readyToStart && (
         <div className="h-screen w-full">
           <MapComponent debug={false} mobileMode={true} routeData={routeData} />
         </div>
