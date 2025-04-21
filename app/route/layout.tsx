@@ -1,3 +1,5 @@
+import { Suspense } from 'react';
+
 export default function routeLayout({
   children,
 }: {
@@ -5,7 +7,9 @@ export default function routeLayout({
 }) {
   return (
     <section className="fixed left-0 top-0 w-full h-full">
-      <div className="relative inset-0">{children}</div>
+      <Suspense>
+        <div className="relative inset-0">{children}</div>
+      </Suspense>
     </section>
   );
 }
