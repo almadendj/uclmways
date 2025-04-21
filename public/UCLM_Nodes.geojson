@@ -338,7 +338,7 @@
         "name": "Maritime Side Gate",
         "isDestination": true,
         "category": "Gates",
-        "description": "Gate ambot basta kilid nis basiced og maritime"
+        "description": "Gate located beside maritime"
       },
       "geometry": {
         "coordinates": [123.954512489776, 10.325632427937876],
@@ -352,7 +352,7 @@
         "name": "Central Gate",
         "isDestination": true,
         "category": "Gates",
-        "description": "Gate ambot basta sa nsa ni dapit"
+        "description": "Visitor Entrance and Exit"
       },
       "geometry": {
         "coordinates": [123.955214224776, 10.326516069784304],
@@ -380,7 +380,7 @@
         "name": "CBE Gate",
         "isDestination": true,
         "category": "Gates",
-        "description": "Gate ambot way pulos sa cbe"
+        "description": "Gate 9"
       },
       "geometry": {
         "coordinates": [123.95592146804466, 10.327840652214235],
@@ -394,7 +394,7 @@
         "name": "M.E. Room Gate",
         "isDestination": true,
         "category": "Gates",
-        "description": "Gate ambot basta M.E. Room dapit daw"
+        "description": "Mechanical Engineering"
       },
       "geometry": {
         "coordinates": [123.95483542771171, 10.32790555231496],
