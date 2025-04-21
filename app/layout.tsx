@@ -1,14 +1,13 @@
-import "@/styles/globals.css";
-import { Metadata, Viewport } from "next";
-import { Link } from "@heroui/link";
-import clsx from "clsx";
+import '@/styles/globals.css';
+import { Metadata, Viewport } from 'next';
+import { Link } from '@heroui/link';
+import clsx from 'clsx';
 
-import AFKModal from "@/components/AFKModal";
-import { Providers } from "./providers";
+import { Providers } from './providers';
 
-import LoadingAnimation from "@/components/loader";
-import { siteConfig } from "@/config/site";
-import { fontSans } from "@/config/fonts";
+import LoadingAnimation from '@/components/loader';
+import { siteConfig } from '@/config/site';
+import { fontSans } from '@/config/fonts';
 
 export const metadata: Metadata = {
   title: {
@@ -17,14 +16,14 @@ export const metadata: Metadata = {
   },
   description: siteConfig.description,
   icons: {
-    icon: "/favicon.ico",
+    icon: '/favicon.ico',
   },
 };
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "white" },
-    { media: "(prefers-color-scheme: dark)", color: "black" },
+    { media: '(prefers-color-scheme: light)', color: 'white' },
+    { media: '(prefers-color-scheme: dark)', color: 'black' },
   ],
 };
 
@@ -38,11 +37,11 @@ export default function RootLayout({
       <head />
       <body
         className={clsx(
-          "min-h-screen bg-homebg font-sans antialiased bg-cover bg-no-repeat",
+          'min-h-screen bg-homebg font-sans antialiased bg-cover bg-no-repeat',
           fontSans.variable
         )}
       >
-        <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
+        <Providers themeProps={{ attribute: 'class', defaultTheme: 'dark' }}>
           <div className="relative flex flex-col h-screen">
             {/* <AFKModal /> */}
             <LoadingAnimation />

@@ -1,16 +1,17 @@
-import { Fill, Stroke, Style } from "ol/style";
-import Feature from "ol/Feature";
-import Point from "ol/geom/Point";
-import { fromLonLat } from "ol/proj";
-import { Circle as CircleGeometry } from "ol/geom";
-import VectorLayer from "ol/layer/Vector";
-import VectorSource from "ol/source/Vector";
-import CircleStyle from "ol/style/Circle";
-import { Extent } from "ol/extent";
-import { containsCoordinate } from "ol/extent";
-import Map from "ol/Map";
-import { MutableRefObject } from "react";
-import { debugLog } from "./components";
+import { Fill, Stroke, Style } from 'ol/style';
+import Feature from 'ol/Feature';
+import Point from 'ol/geom/Point';
+import { fromLonLat } from 'ol/proj';
+import { Circle as CircleGeometry } from 'ol/geom';
+import VectorLayer from 'ol/layer/Vector';
+import VectorSource from 'ol/source/Vector';
+import CircleStyle from 'ol/style/Circle';
+import { Extent } from 'ol/extent';
+import { containsCoordinate } from 'ol/extent';
+import Map from 'ol/Map';
+import { MutableRefObject } from 'react';
+
+import { debugLog } from './components';
 
 // Check if coordinates are within school boundary
 export const isCoordinateInsideSchool = (
@@ -18,6 +19,7 @@ export const isCoordinateInsideSchool = (
   boundary: Extent | null
 ) => {
   if (!boundary) return true; // If no boundary defined, assume inside
+
   return containsCoordinate(boundary, coords);
 };
 
@@ -48,16 +50,17 @@ export const setupLocationTracking = (
         return new Style({
           image: new CircleStyle({
             radius: 8,
-            fill: new Fill({ color: "#ff0000" }),
-            stroke: new Stroke({ color: "#ffffff", width: 2 }),
+            fill: new Fill({ color: '#ff0000' }),
+            stroke: new Stroke({ color: '#ffffff', width: 2 }),
           }),
         });
       } else if (feature === accuracyFeature) {
         return new Style({
-          fill: new Fill({ color: "rgba(0, 0, 255, 0.2)" }),
-          stroke: new Stroke({ color: "blue", width: 1 }),
+          fill: new Fill({ color: 'rgba(0, 0, 255, 0.2)' }),
+          stroke: new Stroke({ color: 'blue', width: 1 }),
         });
       }
+
       return new Style();
     },
   });
@@ -88,7 +91,7 @@ export const setupLocationTracking = (
         isOutsideSchoolRef.current = !!isOutside;
 
         if (isOutside) {
-          debugLog(debugInfoRef, debug, "Location outside school boundaries");
+          debugLog(debugInfoRef, debug, 'Location outside school boundaries');
         }
       }
     } finally {
@@ -100,9 +103,10 @@ export const setupLocationTracking = (
   const watchId = navigator.geolocation.watchPosition(
     updateUserPosition,
     (error) => {
-      console.error("Error getting location:", error);
+      console.error('Error getting location:', error);
       // Update ref instead of state directly
       const errorMsg = `Location error: ${error.message}`;
+
       if (locationErrorRef.current !== errorMsg) {
         locationErrorRef.current = errorMsg;
         debugLog(debugInfoRef, debug, `Geolocation error: ${error.message}`);

@@ -1,5 +1,4 @@
-import { ReadonlyURLSearchParams } from "next/navigation";
-import { MutableRefObject } from "react";
+import { ReadonlyURLSearchParams } from 'next/navigation';
 
 export interface GeolocationPosition {
   coords: {
@@ -27,9 +26,9 @@ export interface MapProps {
 export interface EditControlsProps {
   isEditMode: boolean;
   toggleEditMode: () => void;
-  drawType: "Point" | "LineString" | "Polygon" | null;
+  drawType: 'Point' | 'LineString' | 'Polygon' | null;
   handleDrawInteractionToggle: (
-    type: "Point" | "LineString" | "Polygon"
+    type: 'Point' | 'LineString' | 'Polygon'
   ) => void;
   handleDeleteSelected: () => void;
   handleExportMap: () => void;

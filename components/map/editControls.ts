@@ -1,22 +1,21 @@
-import { Fill, Stroke, Style } from "ol/style";
-import Draw from "ol/interaction/Draw";
-import Modify from "ol/interaction/Modify";
-import Select from "ol/interaction/Select";
-import { click } from "ol/events/condition";
-import { saveAs } from "file-saver";
-import Feature from "ol/Feature";
-import GeoJSON from "ol/format/GeoJSON";
-import CircleStyle from "ol/style/Circle";
-import Collection from "ol/Collection";
-import Geometry from "ol/geom/Geometry";
-import Point from "ol/geom/Point";
-import Map from "ol/Map";
-import { MutableRefObject } from "react";
-import { fromLonLat } from "ol/proj";
-import { Polygon } from "ol/geom";
-import { debugLog } from "./components";
-import { getRandomColor, hexToRGBA } from "./layers";
-import { DebugCallback } from "./types";
+import { Fill, Stroke, Style } from 'ol/style';
+import Draw from 'ol/interaction/Draw';
+import Modify from 'ol/interaction/Modify';
+import Select from 'ol/interaction/Select';
+import { click } from 'ol/events/condition';
+import { saveAs } from 'file-saver';
+import Feature from 'ol/Feature';
+import GeoJSON from 'ol/format/GeoJSON';
+import CircleStyle from 'ol/style/Circle';
+import Point from 'ol/geom/Point';
+import Map from 'ol/Map';
+import { MutableRefObject } from 'react';
+import { fromLonLat } from 'ol/proj';
+import { Polygon } from 'ol/geom';
+
+import { debugLog } from './components';
+import { getRandomColor, hexToRGBA } from './layers';
+import { DebugCallback } from './types';
 
 // Export GeoJSON data
 export const exportGeoJSON = (
@@ -28,12 +27,13 @@ export const exportGeoJSON = (
 ) => {
   const features = source.getFeatures();
   const geoJsonFormat = new GeoJSON({
-    dataProjection: "EPSG:4326",
-    featureProjection: "EPSG:3857",
+    dataProjection: 'EPSG:4326',
+    featureProjection: 'EPSG:3857',
   });
 
   const geoJsonStr = geoJsonFormat.writeFeatures(features);
-  const blob = new Blob([geoJsonStr], { type: "application/json" });
+  const blob = new Blob([geoJsonStr], { type: 'application/json' });
+
   saveAs(blob, filename);
   debugLog(
     debugInfoRef,
@@ -61,14 +61,14 @@ export const addMarker = (
   });
 
   // Set default properties if not provided
-  if (!options["marker-color"]) {
-    feature.set("marker-color", getRandomColor());
+  if (!options['marker-color']) {
+    feature.set('marker-color', getRandomColor());
   }
-  if (!options["marker-size"]) {
-    feature.set("marker-size", "medium");
+  if (!options['marker-size']) {
+    feature.set('marker-size', 'medium');
   }
   if (!options.name) {
-    feature.set("name", `Marker ${pointsSource.getFeatures().length + 1}`);
+    feature.set('name', `Marker ${pointsSource.getFeatures().length + 1}`);
   }
 
   pointsSource.addFeature(feature);
@@ -78,6 +78,7 @@ export const addMarker = (
     `Added marker at [${lon}, ${lat}]`,
     updateDebugCallback
   );
+
   return feature;
 };
 
@@ -100,19 +101,19 @@ export const addPolygon = (
 
   // Set default properties if not provided
   if (!options.fill) {
-    feature.set("fill", getRandomColor());
+    feature.set('fill', getRandomColor());
   }
-  if (!options["fill-opacity"]) {
-    feature.set("fill-opacity", 0.5);
+  if (!options['fill-opacity']) {
+    feature.set('fill-opacity', 0.5);
   }
   if (!options.stroke) {
-    feature.set("stroke", "#000000");
+    feature.set('stroke', '#000000');
   }
   if (!options.strokeWidth) {
-    feature.set("strokeWidth", 2);
+    feature.set('strokeWidth', 2);
   }
   if (!options.name) {
-    feature.set("name", `Polygon ${vectorSource.getFeatures().length + 1}`);
+    feature.set('name', `Polygon ${vectorSource.getFeatures().length + 1}`);
   }
 
   vectorSource.addFeature(feature);
@@ -122,6 +123,7 @@ export const addPolygon = (
     `Added polygon with ${coordinates.length} points`,
     updateDebugCallback
   );
+
   return feature;
 };
 
@@ -139,17 +141,20 @@ export const deleteSelectedFeature = (
   if (!selectInteraction) return;
 
   const selectedFeatures = selectInteraction.getFeatures();
+
   if (selectedFeatures.getLength() === 0) {
     debugLog(
       debugInfoRef,
       debug,
-      "No feature selected to delete",
+      'No feature selected to delete',
       updateDebugCallback
     );
+
     return;
   }
 
   const feature = selectedFeatures.item(0);
+
   if (!feature) return;
 
   // Try to remove from both sources
@@ -164,7 +169,7 @@ export const deleteSelectedFeature = (
   debugLog(
     debugInfoRef,
     debug,
-    "Deleted selected feature",
+    'Deleted selected feature',
     updateDebugCallback
   );
 };
@@ -181,7 +186,7 @@ export const setupEditControls = (
   setSelectedFeature: (feature: Feature | null) => void,
   setFeatureProperties: (props: { [key: string]: any }) => void,
   setShowCustomizePanel: (show: boolean) => void,
-  setDrawType: (type: "Point" | "LineString" | "Polygon" | null) => void,
+  setDrawType: (type: 'Point' | 'LineString' | 'Polygon' | null) => void,
   debug: boolean,
   debugInfoRef: MutableRefObject<string[]>,
   updateDebugCallback?: DebugCallback
@@ -201,11 +206,12 @@ export const setupEditControls = (
   }
 
   if (!editMode) {
-    debugLog(debugInfoRef, debug, "Edit mode disabled", updateDebugCallback);
+    debugLog(debugInfoRef, debug, 'Edit mode disabled', updateDebugCallback);
+
     return;
   }
 
-  debugLog(debugInfoRef, debug, "Edit mode enabled", updateDebugCallback);
+  debugLog(debugInfoRef, debug, 'Edit mode enabled', updateDebugCallback);
 
   // Create select interaction
   const select = new Select({
@@ -215,11 +221,11 @@ export const setupEditControls = (
       const isPoint = feature.getGeometry() instanceof Point;
 
       if (isPoint) {
-        const color = properties["marker-color"] || "#ff0000";
+        const color = properties['marker-color'] || '#ff0000';
         const size =
-          properties["marker-size"] === "large"
+          properties['marker-size'] === 'large'
             ? 12
-            : properties["marker-size"] === "medium"
+            : properties['marker-size'] === 'medium'
               ? 8
               : 6;
 
@@ -227,21 +233,21 @@ export const setupEditControls = (
           image: new CircleStyle({
             radius: size,
             fill: new Fill({ color }),
-            stroke: new Stroke({ color: "#ffffff", width: 2 }),
+            stroke: new Stroke({ color: '#ffffff', width: 2 }),
           }),
         });
       } else {
-        const fillColor = properties.fill || properties.fillColor || "#0080ff";
+        const fillColor = properties.fill || properties.fillColor || '#0080ff';
         const strokeColor =
-          properties.stroke || properties.strokeColor || "#000000";
-        const fillOpacity = properties["fill-opacity"] ?? 0.5;
+          properties.stroke || properties.strokeColor || '#000000';
+        const fillOpacity = properties['fill-opacity'] ?? 0.5;
 
         return new Style({
           fill: new Fill({
             color: hexToRGBA(fillColor, fillOpacity),
           }),
           stroke: new Stroke({
-            color: "#ffffff",
+            color: '#ffffff',
             width: 4,
           }),
         });
@@ -250,18 +256,19 @@ export const setupEditControls = (
   });
 
   // Handle feature selection
-  select.on("select", (event) => {
+  select.on('select', (event) => {
     const feature = event.selected[0];
 
     if (feature) {
       const properties = feature.getProperties();
+
       delete properties.geometry; // Remove geometry from properties display
 
       setSelectedFeature(feature);
       setFeatureProperties(properties);
       setShowCustomizePanel(true);
 
-      debugLog(debugInfoRef, debug, "Feature selected", updateDebugCallback);
+      debugLog(debugInfoRef, debug, 'Feature selected', updateDebugCallback);
     } else {
       setSelectedFeature(null);
       setFeatureProperties({});
@@ -287,7 +294,7 @@ export const setupEditControls = (
 
 // Toggle draw interaction
 export const toggleDrawInteraction = (
-  type: "Point" | "LineString" | "Polygon" | null,
+  type: 'Point' | 'LineString' | 'Polygon' | null,
   editMode: boolean,
   map: Map | null,
   vectorSource: any,
@@ -310,7 +317,8 @@ export const toggleDrawInteraction = (
   }
 
   if (!type) {
-    debugLog(debugInfoRef, debug, "Draw mode disabled", updateDebugCallback);
+    debugLog(debugInfoRef, debug, 'Draw mode disabled', updateDebugCallback);
+
     return;
   }
 
@@ -322,51 +330,53 @@ export const toggleDrawInteraction = (
   );
 
   // Create draw interaction with the appropriate source
-  const source = type === "Point" ? pointsSource : vectorSource;
+  const source = type === 'Point' ? pointsSource : vectorSource;
 
   const draw = new Draw({
     source,
     type,
     style: new Style({
       fill: new Fill({
-        color: "rgba(255, 255, 255, 0.2)",
+        color: 'rgba(255, 255, 255, 0.2)',
       }),
       stroke: new Stroke({
-        color: "#ffcc33",
+        color: '#ffcc33',
         width: 2,
       }),
       image: new CircleStyle({
         radius: 7,
         fill: new Fill({
-          color: "#ffcc33",
+          color: '#ffcc33',
         }),
       }),
     }),
   });
 
   // Set default properties for new features
-  draw.on("drawend", (event) => {
+  draw.on('drawend', (event) => {
     const feature = event.feature;
 
-    if (type === "Point") {
-      feature.set("marker-color", getRandomColor());
-      feature.set("marker-size", "medium");
-      feature.set("name", `Marker ${pointsSource.getFeatures().length}`);
+    if (type === 'Point') {
+      feature.set('marker-color', getRandomColor());
+      feature.set('marker-size', 'medium');
+      feature.set('name', `Marker ${pointsSource.getFeatures().length}`);
     } else {
-      feature.set("fill", getRandomColor());
-      feature.set("fill-opacity", 0.5);
-      feature.set("stroke", "#000000");
-      feature.set("strokeWidth", 2);
-      feature.set("name", `${type} ${vectorSource.getFeatures().length}`);
+      feature.set('fill', getRandomColor());
+      feature.set('fill-opacity', 0.5);
+      feature.set('stroke', '#000000');
+      feature.set('strokeWidth', 2);
+      feature.set('name', `${type} ${vectorSource.getFeatures().length}`);
     }
 
     // Select the newly created feature
     if (selectInteractionRef.current) {
       const selected = selectInteractionRef.current.getFeatures();
+
       selected.clear();
       selected.push(feature);
 
       const properties = feature.getProperties();
+
       delete properties.geometry;
 
       setSelectedFeature(feature);

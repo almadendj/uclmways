@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
-import { RoadNode } from "./roadSystem";
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
+
+import { RoadNode } from './roadSystem';
 
 interface DestinationSelectorProps {
   destinations: RoadNode[];
@@ -25,9 +26,9 @@ const CategoryGroup: React.FC<CategoryGroupProps> = React.memo(
     }
 
     // Memoize the toggle function
-    const toggleExpanded = useCallback(() => {
+    const toggleExpanded = () => {
       setExpanded((prev) => !prev);
-    }, []);
+    };
 
     return (
       <div className="mb-4">
@@ -38,7 +39,7 @@ const CategoryGroup: React.FC<CategoryGroupProps> = React.memo(
           <h3 className="font-medium">
             {category} ({destinations.length})
           </h3>
-          <span>{expanded ? "▼" : "►"}</span>
+          <span>{expanded ? '▼' : '►'}</span>
         </div>
 
         {expanded && (
@@ -49,13 +50,13 @@ const CategoryGroup: React.FC<CategoryGroupProps> = React.memo(
                 className="p-2 hover:bg-gray-50 cursor-pointer flex items-center"
                 onClick={() => onSelect(destination)}
               >
-                <div className="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
+                <div className="w-2 h-2 bg-blue-500 rounded-full mr-2" />
                 <span>{destination.name}</span>
                 {destination.description && (
                   <span className="ml-1 text-xs text-gray-500">
-                    {" "}
+                    {' '}
                     - {destination.description.substring(0, 30)}
-                    {destination.description.length > 30 ? "..." : ""}
+                    {destination.description.length > 30 ? '...' : ''}
                   </span>
                 )}
               </div>
@@ -68,7 +69,7 @@ const CategoryGroup: React.FC<CategoryGroupProps> = React.memo(
 );
 
 // Set display name for React DevTools
-CategoryGroup.displayName = "CategoryGroup";
+CategoryGroup.displayName = 'CategoryGroup';
 
 const DestinationSelector: React.FC<DestinationSelectorProps> = ({
   destinations,
@@ -76,7 +77,7 @@ const DestinationSelector: React.FC<DestinationSelectorProps> = ({
   onClose,
   categories = [],
 }) => {
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
   const [filteredDestinations, setFilteredDestinations] =
     useState<RoadNode[]>(destinations);
 
@@ -116,7 +117,7 @@ const DestinationSelector: React.FC<DestinationSelectorProps> = ({
   const usedCategories = useMemo(() => {
     return categories.length > 0
       ? categories
-      : Array.from(new Set(destinations.map((d) => d.category || "Other")));
+      : Array.from(new Set(destinations.map((d) => d.category || 'Other')));
   }, [categories, destinations]);
 
   // Memoize the destinations grouped by category
@@ -130,7 +131,8 @@ const DestinationSelector: React.FC<DestinationSelectorProps> = ({
 
     // Fill with filtered destinations
     filteredDestinations.forEach((dest) => {
-      const category = dest.category || "Other";
+      const category = dest.category || 'Other';
+
       if (!result[category]) {
         result[category] = [];
       }
@@ -152,6 +154,7 @@ const DestinationSelector: React.FC<DestinationSelectorProps> = ({
         </div>
       );
     }
+
     return null;
   }, [destinations.length]);
 
@@ -160,7 +163,7 @@ const DestinationSelector: React.FC<DestinationSelectorProps> = ({
     if (
       filteredDestinations.length === 0 &&
       destinations.length > 0 &&
-      searchQuery.trim() !== ""
+      searchQuery.trim() !== ''
     ) {
       return (
         <div className="text-center text-gray-500 py-4">
@@ -168,6 +171,7 @@ const DestinationSelector: React.FC<DestinationSelectorProps> = ({
         </div>
       );
     }
+
     return null;
   }, [filteredDestinations.length, destinations.length, searchQuery]);
 
@@ -198,9 +202,9 @@ const DestinationSelector: React.FC<DestinationSelectorProps> = ({
 
       <div className="mb-4">
         <input
-          type="text"
           className="w-full px-3 py-2 border rounded-md"
           placeholder="Search destinations..."
+          type="text"
           value={searchQuery}
           onChange={handleSearchChange}
         />

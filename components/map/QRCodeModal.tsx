@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { RoadNode } from "./roadSystem";
+import React, { useState } from 'react';
+
+import { RoadNode } from './roadSystem';
 
 interface QRCodeModalProps {
   qrCodeUrl: string;
@@ -17,7 +18,7 @@ const QRCodeModal: React.FC<QRCodeModalProps> = ({
   routeInfo,
   onClose,
 }) => {
-  const [animationClass, setAnimationClass] = useState("");
+  const [animationClass, setAnimationClass] = useState('');
   const [countdown, setCountdown] = useState<number | null>(null);
 
   // // Animate the QR code on mount
@@ -58,18 +59,18 @@ const QRCodeModal: React.FC<QRCodeModalProps> = ({
               onClick={onClose}
             >
               <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
                 fill="none"
+                height="24"
                 stroke="currentColor"
-                strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+                width="24"
+                xmlns="http://www.w3.org/2000/svg"
               >
-                <path d="M18 6L6 18"></path>
-                <path d="M6 6l12 12"></path>
+                <path d="M18 6L6 18" />
+                <path d="M6 6l12 12" />
               </svg>
             </button>
           </div>
@@ -83,25 +84,25 @@ const QRCodeModal: React.FC<QRCodeModalProps> = ({
         {/* QR Code */}
         <div className={`p-6 flex flex-col items-center ${animationClass}`}>
           <div className="relative">
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-100 to-blue-50 rounded-xl"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-100 to-blue-50 rounded-xl" />
             <div className="relative p-3 bg-white rounded-xl shadow-md">
               <img
-                src={qrCodeUrl}
                 alt="Route QR Code"
                 className="w-64 h-64 object-contain"
+                src={qrCodeUrl}
               />
             </div>
 
             {/* Corner decorations */}
-            <div className="absolute top-0 left-0 w-6 h-6 border-t-4 border-l-4 border-blue-500 rounded-tl-lg -translate-x-2 -translate-y-2"></div>
-            <div className="absolute top-0 right-0 w-6 h-6 border-t-4 border-r-4 border-blue-500 rounded-tr-lg translate-x-2 -translate-y-2"></div>
-            <div className="absolute bottom-0 left-0 w-6 h-6 border-b-4 border-l-4 border-blue-500 rounded-bl-lg -translate-x-2 translate-y-2"></div>
-            <div className="absolute bottom-0 right-0 w-6 h-6 border-b-4 border-r-4 border-blue-500 rounded-br-lg translate-x-2 translate-y-2"></div>
+            <div className="absolute top-0 left-0 w-6 h-6 border-t-4 border-l-4 border-blue-500 rounded-tl-lg -translate-x-2 -translate-y-2" />
+            <div className="absolute top-0 right-0 w-6 h-6 border-t-4 border-r-4 border-blue-500 rounded-tr-lg translate-x-2 -translate-y-2" />
+            <div className="absolute bottom-0 left-0 w-6 h-6 border-b-4 border-l-4 border-blue-500 rounded-bl-lg -translate-x-2 translate-y-2" />
+            <div className="absolute bottom-0 right-0 w-6 h-6 border-b-4 border-r-4 border-blue-500 rounded-br-lg translate-x-2 translate-y-2" />
           </div>
 
           {/* Scan instructions */}
           <p className="mt-6 text-center text-gray-600 max-w-xs">
-            Scan this QR code with your phone camera to navigate to{" "}
+            Scan this QR code with your phone camera to navigate to{' '}
             <span className="font-semibold">{destination.name}</span>
           </p>
 
@@ -123,7 +124,7 @@ const QRCodeModal: React.FC<QRCodeModalProps> = ({
                 </span>
               </div>
 
-              <div className="h-12 border-l border-gray-300"></div>
+              <div className="h-12 border-l border-gray-300" />
 
               <div className="flex flex-col items-center p-2">
                 <span className="text-gray-500 text-sm">Walking Time</span>
@@ -132,7 +133,7 @@ const QRCodeModal: React.FC<QRCodeModalProps> = ({
                 </span>
               </div>
 
-              <div className="h-12 border-l border-gray-300"></div>
+              <div className="h-12 border-l border-gray-300" />
 
               <div className="flex flex-col items-center p-2">
                 <span className="text-gray-500 text-sm">Calories</span>

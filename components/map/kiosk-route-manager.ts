@@ -1,7 +1,8 @@
-import { useState, useCallback, useRef, MutableRefObject } from "react";
-import { RouteData, generateRouteQR } from "./qrCodeUtils";
-import { RoadNode } from "./roadSystem";
-import { debugLog } from "./components";
+import { useState, useCallback, useRef, MutableRefObject } from 'react';
+
+import { RouteData, generateRouteQR } from './qrCodeUtils';
+import { RoadNode } from './roadSystem';
+import { debugLog } from './components';
 
 interface UseKioskRouteManagerOptions {
   currentLocation: RoadNode | null;
@@ -27,7 +28,7 @@ export const useKioskRouteManager = ({
   onReset,
   updateDebugCallback,
 }: UseKioskRouteManagerOptions) => {
-  const [qrCodeUrl, setQRCodeUrl] = useState<string>("");
+  const [qrCodeUrl, setQRCodeUrl] = useState<string>('');
   const [showQRModal, setShowQRModal] = useState<boolean>(false);
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -38,7 +39,7 @@ export const useKioskRouteManager = ({
   // Function to reset the kiosk state
   const resetKiosk = useCallback(() => {
     setShowQRModal(false);
-    setQRCodeUrl("");
+    setQRCodeUrl('');
     setError(null);
 
     if (resetTimeoutRef.current) {
@@ -53,7 +54,7 @@ export const useKioskRouteManager = ({
     debugLog(
       debugInfoRef,
       debug,
-      "Kiosk state reset - ready for next user",
+      'Kiosk state reset - ready for next user',
       updateDebugCallback
     );
   }, [debugInfoRef, debug, onReset, updateDebugCallback]);
@@ -65,9 +66,10 @@ export const useKioskRouteManager = ({
       debugLog(
         debugInfoRef,
         debug,
-        "Already generating QR code, please wait",
+        'Already generating QR code, please wait',
         updateDebugCallback
       );
+
       return;
     }
 
@@ -86,11 +88,11 @@ export const useKioskRouteManager = ({
           : null;
 
       if (!startNodeId || !selectedDestination) {
-        throw new Error("Missing start location or destination");
+        throw new Error('Missing start location or destination');
       }
 
       if (!routeInfo) {
-        throw new Error("Missing route information");
+        throw new Error('Missing route information');
       }
 
       // Create route data object
@@ -117,10 +119,10 @@ export const useKioskRouteManager = ({
         debugInfoRef,
         debug,
         {
-          primaryColor: "#4285F4",
-          secondaryColor: "#34A853",
+          primaryColor: '#4285F4',
+          secondaryColor: '#34A853',
           cornerRadius: 10,
-          errorCorrection: "H",
+          errorCorrection: 'H',
         },
         updateDebugCallback
       );
@@ -132,7 +134,7 @@ export const useKioskRouteManager = ({
       debugLog(
         debugInfoRef,
         debug,
-        "QR code generated successfully",
+        'QR code generated successfully',
         updateDebugCallback
       );
     } catch (error) {

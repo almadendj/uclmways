@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useMemo } from "react";
-import { RoadNode } from "./roadSystem";
+import React, { useState, useEffect, useMemo } from 'react';
+
+import { RoadNode } from './roadSystem';
 
 interface KioskQRModalProps {
   qrCodeUrl: string;
@@ -28,8 +29,10 @@ const KioskQRModal: React.FC<KioskQRModalProps> = ({
         if (prev <= 1) {
           clearInterval(timer);
           onClose();
+
           return 0;
         }
+
         return prev - 1;
       });
     }, 1000);
@@ -40,20 +43,23 @@ const KioskQRModal: React.FC<KioskQRModalProps> = ({
 
   // Format route information
   const formattedDistance = useMemo(() => {
-    if (!routeInfo) return "Unknown";
+    if (!routeInfo) return 'Unknown';
+
     return routeInfo.distance < 1000
       ? `${Math.round(routeInfo.distance)}m`
       : `${(routeInfo.distance / 1000).toFixed(2)}km`;
   }, [routeInfo]);
 
   const formattedTime = useMemo(() => {
-    if (!routeInfo) return "Unknown";
+    if (!routeInfo) return 'Unknown';
     const minutes = Math.ceil(routeInfo.estimatedTime);
-    return minutes === 1 ? "1 min" : `${minutes} mins`;
+
+    return minutes === 1 ? '1 min' : `${minutes} mins`;
   }, [routeInfo]);
 
   const calories = useMemo(() => {
     if (!routeInfo) return 0;
+
     // Average 65 calories burned per km walking
     return Math.round((routeInfo.distance / 1000) * 65);
   }, [routeInfo]);
@@ -86,20 +92,20 @@ const KioskQRModal: React.FC<KioskQRModalProps> = ({
         {/* QR Code and Instructions */}
         <div className="p-6 flex flex-col md:flex-row items-center">
           <div className="relative mb-6 md:mb-0 md:mr-6">
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl" />
             <div className="relative p-4 bg-white rounded-xl shadow-md">
               <img
-                src={qrCodeUrl}
                 alt="Route QR Code"
                 className="w-64 h-64 object-contain"
+                src={qrCodeUrl}
               />
             </div>
 
             {/* Corner decorations */}
-            <div className="absolute top-0 left-0 w-6 h-6 border-t-4 border-l-4 border-blue-500 rounded-tl-lg -translate-x-2 -translate-y-2"></div>
-            <div className="absolute top-0 right-0 w-6 h-6 border-t-4 border-r-4 border-blue-500 rounded-tr-lg translate-x-2 -translate-y-2"></div>
-            <div className="absolute bottom-0 left-0 w-6 h-6 border-b-4 border-l-4 border-blue-500 rounded-bl-lg -translate-x-2 translate-y-2"></div>
-            <div className="absolute bottom-0 right-0 w-6 h-6 border-b-4 border-r-4 border-blue-500 rounded-br-lg translate-x-2 translate-y-2"></div>
+            <div className="absolute top-0 left-0 w-6 h-6 border-t-4 border-l-4 border-blue-500 rounded-tl-lg -translate-x-2 -translate-y-2" />
+            <div className="absolute top-0 right-0 w-6 h-6 border-t-4 border-r-4 border-blue-500 rounded-tr-lg translate-x-2 -translate-y-2" />
+            <div className="absolute bottom-0 left-0 w-6 h-6 border-b-4 border-l-4 border-blue-500 rounded-bl-lg -translate-x-2 translate-y-2" />
+            <div className="absolute bottom-0 right-0 w-6 h-6 border-b-4 border-r-4 border-blue-500 rounded-br-lg translate-x-2 translate-y-2" />
           </div>
 
           <div className="md:flex-1 text-center md:text-left">
@@ -166,7 +172,7 @@ const KioskQRModal: React.FC<KioskQRModalProps> = ({
                 </span>
               </div>
 
-              <div className="h-12 border-l border-gray-300"></div>
+              <div className="h-12 border-l border-gray-300" />
 
               <div className="flex flex-col items-center p-2">
                 <span className="text-gray-500 text-sm">Walking Time</span>
@@ -175,7 +181,7 @@ const KioskQRModal: React.FC<KioskQRModalProps> = ({
                 </span>
               </div>
 
-              <div className="h-12 border-l border-gray-300"></div>
+              <div className="h-12 border-l border-gray-300" />
 
               <div className="flex flex-col items-center p-2">
                 <span className="text-gray-500 text-sm">Calories</span>
@@ -198,17 +204,17 @@ const KioskQRModal: React.FC<KioskQRModalProps> = ({
 
           <p className="text-blue-600 font-medium flex items-center">
             <svg
-              xmlns="http://www.w3.org/2000/svg"
               className="h-5 w-5 mr-1"
               fill="none"
-              viewBox="0 0 24 24"
               stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
             >
               <path
+                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth={2}
-                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
               />
             </svg>
             Take your phone with you!

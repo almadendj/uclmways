@@ -1,14 +1,15 @@
-"use client";
+'use client';
 
-import { useEffect, useState, useRef } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
-import dynamic from "next/dynamic";
-import Head from "next/head";
-import { parseRouteFromUrl } from "@/components/map/qrCodeUtils"; // Adjust this path as needed
-import { saveEndNode } from "@/components/map/localStorage";
+import { useEffect, useState, useRef } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
+import dynamic from 'next/dynamic';
+import Head from 'next/head';
+
+import { parseRouteFromUrl } from '@/components/map/qrCodeUtils'; // Adjust this path as needed
+import { saveEndNode } from '@/components/map/localStorage';
 
 // Import map component dynamically to avoid SSR issues
-const MapComponent = dynamic(() => import("@/components/map/MapComponent"), {
+const MapComponent = dynamic(() => import('@/components/map/MapComponent'), {
   ssr: false,
 });
 
@@ -16,7 +17,7 @@ const MapComponent = dynamic(() => import("@/components/map/MapComponent"), {
 const LoadingScreen = () => (
   <div className="flex items-center justify-center min-h-screen bg-gray-100">
     <div className="text-center p-6">
-      <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+      <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
       <p className="text-xl font-bold text-gray-800 mb-2">Loading your route</p>
       <p className="text-gray-600">
         Please wait while we prepare your navigation
@@ -34,17 +35,17 @@ const ErrorScreen = ({ error }: { error: string }) => {
       <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full mx-4">
         <div className="text-red-500 mb-6">
           <svg
-            xmlns="http://www.w3.org/2000/svg"
             className="h-16 w-16 mx-auto"
             fill="none"
-            viewBox="0 0 24 24"
             stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
           >
             <path
+              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth={2}
-              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
             />
           </svg>
         </div>
@@ -52,7 +53,7 @@ const ErrorScreen = ({ error }: { error: string }) => {
         <p className="text-gray-600 text-center mb-8">{error}</p>
         <button
           className="w-full bg-blue-500 text-white py-3 px-4 rounded-lg hover:bg-blue-600 transition-colors"
-          onClick={() => router.push("/")}
+          onClick={() => router.push('/')}
         >
           Go to Map
         </button>
@@ -67,17 +68,17 @@ const RouteReadyScreen = ({ startRoute }: { startRoute: () => void }) => (
     <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full mx-4 text-center">
       <div className="text-blue-500 mb-6">
         <svg
-          xmlns="http://www.w3.org/2000/svg"
           className="h-16 w-16 mx-auto"
           fill="none"
-          viewBox="0 0 24 24"
           stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
         >
           <path
+            d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"
             strokeLinecap="round"
             strokeLinejoin="round"
             strokeWidth={2}
-            d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"
           />
         </svg>
       </div>
@@ -90,17 +91,17 @@ const RouteReadyScreen = ({ startRoute }: { startRoute: () => void }) => (
         onClick={startRoute}
       >
         <svg
-          xmlns="http://www.w3.org/2000/svg"
           className="h-5 w-5 mr-2"
           fill="none"
-          viewBox="0 0 24 24"
           stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
         >
           <path
+            d="M9 5l7 7-7 7"
             strokeLinecap="round"
             strokeLinejoin="round"
             strokeWidth={2}
-            d="M9 5l7 7-7 7"
           />
         </svg>
         Start Navigation
@@ -120,8 +121,9 @@ export default function RoutePage() {
 
   useEffect(() => {
     if (!searchParams || Array.from(searchParams.entries()).length === 0) {
-      setError("No route parameters found");
+      setError('No route parameters found');
       setLoading(false);
+
       return;
     }
 
@@ -129,8 +131,9 @@ export default function RoutePage() {
       const routeDataObj = parseRouteFromUrl(searchParams, debugInfoRef, false);
 
       if (!routeDataObj) {
-        setError("Invalid route data");
+        setError('Invalid route data');
         setLoading(false);
+
         return;
       }
 
@@ -140,11 +143,11 @@ export default function RoutePage() {
       setReadyToStart(true);
     } catch (err) {
       if (err instanceof Error) {
-        console.error("Error parsing route:", err.message);
+        console.error('Error parsing route:', err.message);
       } else {
-        console.error("Unknown error parsing route:", err);
+        console.error('Unknown error parsing route:', err);
       }
-      setError("Failed to load route. Please try again.");
+      setError('Failed to load route. Please try again.');
       setLoading(false);
     }
   }, [searchParams]);
@@ -157,8 +160,8 @@ export default function RoutePage() {
       <Head>
         <title>Campus Navigation</title>
         <meta
-          name="viewport"
           content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+          name="viewport"
         />
       </Head>
 
@@ -166,7 +169,7 @@ export default function RoutePage() {
         <RouteReadyScreen startRoute={() => setReadyToStart(false)} />
       ) : (
         <div className="h-screen w-full">
-          <MapComponent routeData={routeData} mobileMode={true} debug={false} />
+          <MapComponent debug={false} mobileMode={true} routeData={routeData} />
         </div>
       )}
     </>

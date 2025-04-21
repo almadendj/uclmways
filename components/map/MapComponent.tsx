@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import React, {
   useEffect,
@@ -6,59 +6,55 @@ import React, {
   useState,
   useCallback,
   useMemo,
-} from "react";
-import dynamic from "next/dynamic";
-import "ol/ol.css";
-import Map from "ol/Map";
-import { fromLonLat, toLonLat } from "ol/proj";
-import { Feature } from "ol";
-import { Style, Stroke } from "ol/style";
-import { Vector as VectorSource } from "ol/source";
-import { Vector as VectorLayer } from "ol/layer";
-import { useRouter, useSearchParams } from "next/navigation";
-import { containsCoordinate, Extent } from "ol/extent";
-import Point from "ol/geom/Point";
-import View from "ol/View";
-import Geometry from "ol/geom/Geometry";
+} from 'react';
+import dynamic from 'next/dynamic';
+import 'ol/ol.css';
+import Map from 'ol/Map';
+import { fromLonLat, toLonLat } from 'ol/proj';
+import { Feature } from 'ol';
+import { Style, Stroke } from 'ol/style';
+import { Vector as VectorSource } from 'ol/source';
+import { Vector as VectorLayer } from 'ol/layer';
+import { useSearchParams } from 'next/navigation';
+import { containsCoordinate, Extent } from 'ol/extent';
+import Point from 'ol/geom/Point';
+import Geometry from 'ol/geom/Geometry';
+import router from 'next/router';
 
-import { getSafeCoordinates } from "./typeSafeGeometryUtils";
-import { useRouteProcessor } from "./routeProcessor";
-
-import { MapProps } from "./types";
-import { setupLayers } from "./layers";
-import { setupLocationTracking } from "./locationTracking";
+import { useRouteProcessor } from './routeProcessor';
+import { MapProps } from './types';
+import { setupLayers } from './layers';
+import { setupLocationTracking } from './locationTracking';
 import {
   setupEditControls,
   toggleDrawInteraction,
   deleteSelectedFeature,
   exportGeoJSON,
-} from "./editControls";
+} from './editControls';
 import {
   CustomizationPanel,
   debugLog,
   DebugPanel,
   EditControls,
-} from "./components";
+} from './components';
 import {
   setupRoadSystem,
   findClosestNode,
   findShortestPath,
   RoadNode,
-} from "./roadSystem";
-import { generateRouteQR, parseRouteFromUrl, RouteData } from "./qrCodeUtils";
-import DestinationSelector from "./DestinationSelector";
-import { useKioskRouteManager } from "./qrCodeUtils";
-import KioskQRModal from "./KioskQRModal";
-import RouteOverlay from "./RouteOverlay";
-import router from "next/router";
-import GeoJSON from "ol/format/GeoJSON";
+} from './roadSystem';
+import { parseRouteFromUrl, RouteData } from './qrCodeUtils';
+import DestinationSelector from './DestinationSelector';
+import { useKioskRouteManager } from './qrCodeUtils';
+import KioskQRModal from './KioskQRModal';
+import RouteOverlay from './RouteOverlay';
 
 const CampusMap: React.FC<MapProps> = ({
-  mapUrl = "/UCLM_Map.geojson",
-  pointsUrl = "/UCLM_Points.geojson",
-  roadsUrl = "/UCLM_Roads.geojson",
-  nodesUrl = "/UCLM_Nodes.geojson",
-  backdropColor = "#f7f2e4",
+  mapUrl = '/UCLM_Map.geojson',
+  pointsUrl = '/UCLM_Points.geojson',
+  roadsUrl = '/UCLM_Roads.geojson',
+  nodesUrl = '/UCLM_Nodes.geojson',
+  backdropColor = '#f7f2e4',
   initialZoom = 15,
   centerCoordinates = [123.9545, 10.3265],
   routeData,
@@ -74,11 +70,11 @@ const CampusMap: React.FC<MapProps> = ({
   const [debugInfo, setDebugInfo] = useState<string[]>([]);
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
   const [drawType, setDrawType] = useState<
-    "Point" | "LineString" | "Polygon" | null
+    'Point' | 'LineString' | 'Polygon' | null
   >(null);
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
-  const [loadingState, setLoadingState] = useState<string>("");
+  const [loadingState, setLoadingState] = useState<string>('');
 
   // Feature customization state
   const [showCustomizePanel, setShowCustomizePanel] = useState<boolean>(false);
@@ -86,7 +82,7 @@ const CampusMap: React.FC<MapProps> = ({
   const [featureProperties, setFeatureProperties] = useState<{
     [key: string]: any;
   }>({});
-  const markerSizeOptions = useMemo(() => ["small", "medium", "large"], []);
+  const markerSizeOptions = useMemo(() => ['small', 'medium', 'large'], []);
 
   // Road system and navigation state
   const [showDestinationSelector, setShowDestinationSelector] =
@@ -111,7 +107,7 @@ const CampusMap: React.FC<MapProps> = ({
     useState<RoadNode | null>(null);
 
   const startingLocationId =
-    useSearchParams().get("startLocationId") ?? "gate1";
+    useSearchParams().get('startLocationId') ?? 'gate1';
 
   const {
     qrCodeUrl,
@@ -162,7 +158,7 @@ const CampusMap: React.FC<MapProps> = ({
   // Memoized debug log function
   const logDebug = useCallback((message: string) => {
     debugLog(debugInfoRef, true, message, () =>
-      setDebugInfo([...debugInfoRef.current]),
+      setDebugInfo([...debugInfoRef.current])
     );
   }, []);
 
@@ -172,21 +168,22 @@ const CampusMap: React.FC<MapProps> = ({
     // This will now be in response to a user gesture
     navigator.geolocation.getCurrentPosition(
       () => {
-        logDebug("Location permission granted");
+        logDebug('Location permission granted');
 
         // Start location tracking now that we have permission
         const cleanup = initLocationTracking();
+
         return () => {
           if (cleanup) cleanup();
         };
       },
       (error) => {
-        console.error("Location permission denied", error);
+        console.error('Location permission denied', error);
         setLocationError(
-          "Location permission denied. Using default entry point for navigation.",
+          'Location permission denied. Using default entry point for navigation.'
         );
         logDebug(`Geolocation error: ${error.message}`);
-      },
+      }
     );
   }, [logDebug]);
 
@@ -203,7 +200,7 @@ const CampusMap: React.FC<MapProps> = ({
       isOutsideSchoolRef,
       schoolBoundaryRef,
       isUpdatingPositionRef,
-      debug,
+      debug
     );
 
     locationWatchIdRef.current = watchId;
@@ -218,6 +215,7 @@ const CampusMap: React.FC<MapProps> = ({
         return;
 
       const geometry = userPositionFeature.getGeometry();
+
       if (!geometry) return;
 
       const coords = geometry.getFirstCoordinate
@@ -225,6 +223,7 @@ const CampusMap: React.FC<MapProps> = ({
         : geometry instanceof Point
           ? geometry.getCoordinates()
           : null;
+
       if (!coords) return;
 
       // Convert to geo coordinates
@@ -234,7 +233,7 @@ const CampusMap: React.FC<MapProps> = ({
       const closestNode = findClosestNode(
         geoCoords[0],
         geoCoords[1],
-        nodesSourceRef.current,
+        nodesSourceRef.current
       );
 
       if (
@@ -253,6 +252,7 @@ const CampusMap: React.FC<MapProps> = ({
 
     // Set up timer to update current location node
     const locationNodeInterval = setInterval(updateCurrentLocationNode, 3000);
+
     locationNodeIntervalRef.current = locationNodeInterval;
 
     // Return cleanup function
@@ -270,12 +270,15 @@ const CampusMap: React.FC<MapProps> = ({
 
   const getFeatureCoordinates = (feature: Feature<Geometry>) => {
     const geometry = feature.getGeometry();
+
     if (geometry && geometry instanceof Point) {
       const coords = geometry.getCoordinates();
       const geoCoords = toLonLat(coords);
+
       // Explicitly cast to [number, number] tuple
       return geoCoords as [number, number];
     }
+
     return [0, 0] as [number, number]; // Default coordinates as tuple
   };
 
@@ -283,7 +286,8 @@ const CampusMap: React.FC<MapProps> = ({
   const processRouteData = (routeData: RouteData) => {
     // Check if sources are available
     if (!nodesSourceRef.current) {
-      console.error("Nodes source not initialized");
+      console.error('Nodes source not initialized');
+
       return;
     }
 
@@ -295,29 +299,30 @@ const CampusMap: React.FC<MapProps> = ({
 
     const features = nodesSourceRef.current.getFeatures();
 
-    const startFeature = features.find((f) => f.get("id") === startNodeId);
-    const endFeature = features.find((f) => f.get("id") === endNodeId);
+    const startFeature = features.find((f) => f.get('id') === startNodeId);
+    const endFeature = features.find((f) => f.get('id') === endNodeId);
 
     if (!startFeature || !endFeature) {
-      console.error("Could not find start or end node features");
+      console.error('Could not find start or end node features');
+
       return;
     }
 
     // Create node objects
     const startNode = {
-      id: startFeature.get("id"),
-      name: startFeature.get("name") || "Start",
+      id: startFeature.get('id'),
+      name: startFeature.get('name') || 'Start',
       isDestination: true,
       coordinates: getFeatureCoordinates(startFeature),
-      category: startFeature.get("category"),
+      category: startFeature.get('category'),
     };
 
     const endNode = {
-      id: endFeature.get("id"),
-      name: endFeature.get("name") || "Destination",
+      id: endFeature.get('id'),
+      name: endFeature.get('name') || 'Destination',
       isDestination: true,
       coordinates: getFeatureCoordinates(endFeature),
-      category: endFeature.get("category"),
+      category: endFeature.get('category'),
     };
 
     // Set nodes in state
@@ -351,7 +356,7 @@ const CampusMap: React.FC<MapProps> = ({
 
       logDebug(`Updated ${property} to ${value}`);
     },
-    [selectedFeature, logDebug],
+    [selectedFeature, logDebug]
   );
 
   // Handle destination selection
@@ -369,15 +374,15 @@ const CampusMap: React.FC<MapProps> = ({
 
         logDebug(`Using ${defaultStartLocation.name} as starting point`);
       } else {
-        logDebug("No current location or default entry point available");
+        logDebug('No current location or default entry point available');
 
         // Show error message to user
         setLocationError(
-          "No starting point available. Please grant location permission or try again.",
+          'No starting point available. Please grant location permission or try again.'
         );
       }
     },
-    [currentLocation, defaultStartLocation, logDebug],
+    [currentLocation, defaultStartLocation, logDebug]
   );
 
   // Display route between two nodes
@@ -405,11 +410,12 @@ const CampusMap: React.FC<MapProps> = ({
         nodesSourceRef.current,
         debugInfoRef,
         debug,
-        () => setDebugInfo([...debugInfoRef.current]),
+        () => setDebugInfo([...debugInfoRef.current])
       );
 
       if (pathFeatures.length === 0) {
-        logDebug("No route found");
+        logDebug('No route found');
+
         return;
       }
 
@@ -422,7 +428,7 @@ const CampusMap: React.FC<MapProps> = ({
         source: routeSource,
         style: new Style({
           stroke: new Stroke({
-            color: "#4285F4",
+            color: '#4285F4',
             width: 6,
             lineDash: [],
           }),
@@ -436,18 +442,21 @@ const CampusMap: React.FC<MapProps> = ({
 
       // Calculate route information (distance and time)
       let totalDistance = 0;
+
       pathFeatures.forEach((feature) => {
         const geometry = feature.getGeometry();
+
         if (geometry) {
           // Check if the geometry is a LineString that has getLength method
-          if (geometry.getType() === "LineString") {
+          if (geometry.getType() === 'LineString') {
             try {
               // Use type assertion to access getLength
               const lineString =
-                geometry as import("ol/geom/LineString").default;
+                geometry as import('ol/geom/LineString').default;
+
               totalDistance += lineString.getLength(); // in meters
             } catch (error) {
-              console.error("Error calculating line length:", error);
+              console.error('Error calculating line length:', error);
             }
           }
         }
@@ -465,10 +474,10 @@ const CampusMap: React.FC<MapProps> = ({
       setShowRouteOverlay(true);
 
       logDebug(
-        `Route displayed: ${pathFeatures.length} segments, ${(totalDistance / 1000).toFixed(2)}km`,
+        `Route displayed: ${pathFeatures.length} segments, ${(totalDistance / 1000).toFixed(2)}km`
       );
     },
-    [debug, logDebug],
+    [debug, logDebug]
   );
 
   // Generate QR code for the current route
@@ -489,7 +498,7 @@ const CampusMap: React.FC<MapProps> = ({
     setRouteInfo(undefined);
     resetRouteProcessor();
 
-    logDebug("Route cleared");
+    logDebug('Route cleared');
   }, [logDebug]);
 
   // Toggle edit mode - memoized
@@ -497,6 +506,7 @@ const CampusMap: React.FC<MapProps> = ({
     if (!mapInstanceRef.current) return;
 
     const newEditMode = !isEditMode;
+
     setIsEditMode(newEditMode);
 
     setupEditControls(
@@ -515,13 +525,13 @@ const CampusMap: React.FC<MapProps> = ({
       debugInfoRef,
       () => {
         setDebugInfo([...debugInfoRef.current]);
-      },
+      }
     );
   }, [isEditMode, debug]);
 
   // Handle draw interaction toggles
   const handleDrawInteractionToggle = useCallback(
-    (type: "Point" | "LineString" | "Polygon") => {
+    (type: 'Point' | 'LineString' | 'Polygon') => {
       // If already active, toggle it off
       if (drawType === type) {
         toggleDrawInteraction(
@@ -539,7 +549,7 @@ const CampusMap: React.FC<MapProps> = ({
           debugInfoRef,
           () => {
             setDebugInfo([...debugInfoRef.current]);
-          },
+          }
         );
         setDrawType(null);
       } else {
@@ -559,12 +569,12 @@ const CampusMap: React.FC<MapProps> = ({
           debugInfoRef,
           () => {
             setDebugInfo([...debugInfoRef.current]);
-          },
+          }
         );
         setDrawType(type);
       }
     },
-    [drawType, isEditMode, debug],
+    [drawType, isEditMode, debug]
   );
 
   // Memoize handlers for UI components
@@ -578,7 +588,7 @@ const CampusMap: React.FC<MapProps> = ({
 
   const handleShowDestinationSelector = useCallback(() => {
     logDebug(
-      `Show destination selector clicked. Available destinations: ${destinations.length}`,
+      `Show destination selector clicked. Available destinations: ${destinations.length}`
     );
     setShowDestinationSelector(true);
   }, [destinations.length, logDebug]);
@@ -592,7 +602,7 @@ const CampusMap: React.FC<MapProps> = ({
       setSelectedFeature,
       debugInfoRef,
       debug,
-      () => setDebugInfo([...debugInfoRef.current]),
+      () => setDebugInfo([...debugInfoRef.current])
     );
   }, [debug]);
 
@@ -606,49 +616,49 @@ const CampusMap: React.FC<MapProps> = ({
     setRouteInfo,
     setShowRouteOverlay,
     routeData, // This can be from props or from URL params
-    logDebug,
+    logDebug
   );
 
   const handleExportMap = useCallback(() => {
     exportGeoJSON(
       vectorSourceRef.current,
-      "map_export.geojson",
+      'map_export.geojson',
       debugInfoRef,
       debug,
-      () => setDebugInfo([...debugInfoRef.current]),
+      () => setDebugInfo([...debugInfoRef.current])
     );
   }, [debug]);
 
   useEffect(() => {
     if (effectiveSearchParams && mobileMode) {
       console.log(
-        "Mobile mode - checking URL params:",
-        effectiveSearchParams.toString(),
+        'Mobile mode - checking URL params:',
+        effectiveSearchParams.toString()
       );
 
       const routeData = parseRouteFromUrl(
         effectiveSearchParams,
         debugInfoRef,
         debug,
-        () => setDebugInfo([...debugInfoRef.current]),
+        () => setDebugInfo([...debugInfoRef.current])
       );
 
       if (routeData) {
-        console.log("Found route data:", routeData);
+        console.log('Found route data:', routeData);
 
         // Wait for map and sources to be fully initialized
         const checkSourcesLoaded = () => {
           if (
             mapInstanceRef.current &&
             roadsSourceRef.current &&
-            roadsSourceRef.current.getState() === "ready" &&
+            roadsSourceRef.current.getState() === 'ready' &&
             nodesSourceRef.current &&
-            nodesSourceRef.current.getState() === "ready"
+            nodesSourceRef.current.getState() === 'ready'
           ) {
-            console.log("Sources ready, processing route");
+            console.log('Sources ready, processing route');
             processRouteData(routeData);
           } else {
-            console.log("Sources not ready yet, waiting...");
+            console.log('Sources not ready yet, waiting...');
             setTimeout(checkSourcesLoaded, 300);
           }
         };
@@ -661,7 +671,7 @@ const CampusMap: React.FC<MapProps> = ({
   const initializeMap = useCallback(() => {
     if (!mapRef.current) return;
 
-    logDebug("Initializing map...");
+    logDebug('Initializing map...');
 
     const updateUIStates = () => {
       if (locationErrorRef.current !== locationError) {
@@ -680,7 +690,7 @@ const CampusMap: React.FC<MapProps> = ({
       centerCoordinates,
       initialZoom,
       mapUrl,
-      pointsUrl,
+      pointsUrl
     );
 
     mapInstanceRef.current = map;
@@ -692,7 +702,7 @@ const CampusMap: React.FC<MapProps> = ({
       nodesUrl,
       debugInfoRef,
       debug,
-      () => setDebugInfo([...debugInfoRef.current]),
+      () => setDebugInfo([...debugInfoRef.current])
     );
 
     // Add road layer to map
@@ -721,7 +731,7 @@ const CampusMap: React.FC<MapProps> = ({
 
         // Debug the node properties
         logDebug(
-          `Node: ${props.id} - isDestination: ${props.isDestination}, Has geometry: ${!!geometry}`,
+          `Node: ${props.id} - isDestination: ${props.isDestination}, Has geometry: ${!!geometry}`
         );
 
         if (props.isDestination && geometry) {
@@ -740,16 +750,16 @@ const CampusMap: React.FC<MapProps> = ({
               id:
                 props.id ||
                 `node-${Math.random().toString(36).substring(2, 9)}`,
-              name: props.name || "Unnamed Location",
+              name: props.name || 'Unnamed Location',
               isDestination: !!props.isDestination,
               coordinates: geoCoords as [number, number],
               description: props.description,
-              category: props.category || "General",
+              category: props.category || 'General',
               imageUrl: props.imageUrl,
             };
 
             // Find and set main gate as default starting point
-            if (props.category === "Gates" && props.id === startingLocationId) {
+            if (props.category === 'Gates' && props.id === startingLocationId) {
               mainGate = node;
             }
 
@@ -760,19 +770,19 @@ const CampusMap: React.FC<MapProps> = ({
           } else {
             nonPointCount++;
             logDebug(
-              `Node ${props.id || "unknown"} is not a Point geometry: ${geometry.getType()}`,
+              `Node ${props.id || 'unknown'} is not a Point geometry: ${geometry.getType()}`
             );
           }
         } else if (!geometry && props.isDestination) {
           geometryIssueCount++;
           logDebug(
-            `Destination node ${props.id || "unknown"} has no geometry!`,
+            `Destination node ${props.id || 'unknown'} has no geometry!`
           );
         }
       });
 
       logDebug(
-        `Destination stats - Total: ${destinationCount}, Loaded: ${loadedDestinations.length}, Geometry issues: ${geometryIssueCount}, Non-point: ${nonPointCount}`,
+        `Destination stats - Total: ${destinationCount}, Loaded: ${loadedDestinations.length}, Geometry issues: ${geometryIssueCount}, Non-point: ${nonPointCount}`
       );
 
       // Set destinations in state
@@ -789,7 +799,7 @@ const CampusMap: React.FC<MapProps> = ({
         processPendingRoute(loadedDestinations, mainGate);
       } else {
         logDebug(
-          "No destinations loaded from features. Will attempt direct GeoJSON load.",
+          'No destinations loaded from features. Will attempt direct GeoJSON load.'
         );
         loadDestinationsDirectly();
       }
@@ -798,9 +808,10 @@ const CampusMap: React.FC<MapProps> = ({
     // Function to process pending route
     const processPendingRoute = (
       loadedDestinations: RoadNode[],
-      mainGate: RoadNode | null,
+      mainGate: RoadNode | null
     ) => {
-      const pendingRouteData = sessionStorage.getItem("pendingRoute");
+      const pendingRouteData = sessionStorage.getItem('pendingRoute');
+
       if (pendingRouteData) {
         try {
           const routeData: RouteData = JSON.parse(pendingRouteData);
@@ -828,16 +839,16 @@ const CampusMap: React.FC<MapProps> = ({
           }
 
           // Clear the pending route
-          sessionStorage.removeItem("pendingRoute");
+          sessionStorage.removeItem('pendingRoute');
         } catch (error) {
-          console.error("Error processing pending route:", error);
+          console.error('Error processing pending route:', error);
         }
       }
     };
 
     // Function to load destinations directly from GeoJSON
     const loadDestinationsDirectly = () => {
-      logDebug("Attempting direct GeoJSON load of destinations...");
+      logDebug('Attempting direct GeoJSON load of destinations...');
 
       fetch(nodesUrl)
         .then((response) => response.json())
@@ -846,7 +857,7 @@ const CampusMap: React.FC<MapProps> = ({
           let mainGate: RoadNode | null = null;
 
           logDebug(
-            `Direct load: ${data.features.length} features in GeoJSON file`,
+            `Direct load: ${data.features.length} features in GeoJSON file`
           );
 
           data.features.forEach((feature: any) => {
@@ -857,17 +868,17 @@ const CampusMap: React.FC<MapProps> = ({
                 id:
                   feature.properties.id ||
                   `node-${Math.random().toString(36).substring(2, 9)}`,
-                name: feature.properties.name || "Unnamed Location",
+                name: feature.properties.name || 'Unnamed Location',
                 isDestination: true,
                 coordinates: coords as [number, number],
                 description: feature.properties.description,
-                category: feature.properties.category || "General",
+                category: feature.properties.category || 'General',
                 imageUrl: feature.properties.imageUrl,
               };
 
               // Find and set main gate as default starting point
               if (
-                feature.properties.category === "Gates" &&
+                feature.properties.category === 'Gates' &&
                 feature.properties.id === startingLocationId
               ) {
                 mainGate = node;
@@ -875,13 +886,13 @@ const CampusMap: React.FC<MapProps> = ({
 
               directLoadedDestinations.push(node);
               logDebug(
-                `Added destination from GeoJSON: ${node.name} (${node.category})`,
+                `Added destination from GeoJSON: ${node.name} (${node.category})`
               );
             }
           });
 
           logDebug(
-            `Direct load destinations: ${directLoadedDestinations.length}`,
+            `Direct load destinations: ${directLoadedDestinations.length}`
           );
 
           if (directLoadedDestinations.length > 0) {
@@ -889,14 +900,14 @@ const CampusMap: React.FC<MapProps> = ({
             if (mainGate) {
               setDefaultStartLocation(mainGate);
               logDebug(
-                `Default starting point set to: ${(mainGate as any).name}`,
+                `Default starting point set to: ${(mainGate as any).name}`
               );
             }
 
             // Check for pending route
             processPendingRoute(directLoadedDestinations, mainGate);
           } else {
-            logDebug("No destinations found in GeoJSON file.");
+            logDebug('No destinations found in GeoJSON file.');
           }
         })
         .catch((error) => {
@@ -907,31 +918,34 @@ const CampusMap: React.FC<MapProps> = ({
     // Handle feature loaded event
     const handleFeaturesLoaded = () => {
       const features = nodesSource.getFeatures();
+
       logDebug(
-        `Features loaded event: ${features.length} features from nodes source`,
+        `Features loaded event: ${features.length} features from nodes source`
       );
       processFeatures(features);
     };
 
     // Register event for future loads
-    nodesSource.on("featuresloadend", handleFeaturesLoaded);
+    nodesSource.on('featuresloadend', handleFeaturesLoaded);
 
     // Also check if features are already loaded
-    if (nodesSource.getState() === "ready") {
+    if (nodesSource.getState() === 'ready') {
       const features = nodesSource.getFeatures();
+
       logDebug(
-        `Source already in 'ready' state with ${features.length} features`,
+        `Source already in 'ready' state with ${features.length} features`
       );
       processFeatures(features);
     } else {
       // If no features are available yet, try loading directly after a short delay
       const checkFeaturesTimer = setTimeout(() => {
         const features = nodesSource.getFeatures();
+
         if (features.length > 0) {
           logDebug(`Found ${features.length} features after delay`);
           processFeatures(features);
         } else {
-          logDebug("No features available after delay, loading directly...");
+          logDebug('No features available after delay, loading directly...');
           loadDestinationsDirectly();
         }
       }, 500);
@@ -942,18 +956,19 @@ const CampusMap: React.FC<MapProps> = ({
 
     // Force a refresh/reload of the nodes source
     try {
-      logDebug("Refreshing nodes source...");
+      logDebug('Refreshing nodes source...');
       nodesSource.refresh();
     } catch (e) {
       logDebug(`Error refreshing source: ${e}`);
     }
     // Load destinations from nodes source
-    nodesSource.on("featuresloadend", () => {
+    nodesSource.on('featuresloadend', () => {
       logDebug(`Nodes features load end triggered. Parsing destinations...`);
       const features = nodesSource.getFeatures();
+
       logDebug(`Total nodes features loaded: ${features.length}`);
       console.log(
-        `✅ featuresloadend triggered, total features: ${features.length}`,
+        `✅ featuresloadend triggered, total features: ${features.length}`
       );
 
       const loadedDestinations: RoadNode[] = [];
@@ -972,7 +987,7 @@ const CampusMap: React.FC<MapProps> = ({
 
         // Debug the node properties
         logDebug(
-          `Node: ${props.id} - isDestination: ${props.isDestination}, Has geometry: ${!!geometry}`,
+          `Node: ${props.id} - isDestination: ${props.isDestination}, Has geometry: ${!!geometry}`
         );
 
         if (props.isDestination && geometry) {
@@ -991,16 +1006,16 @@ const CampusMap: React.FC<MapProps> = ({
               id:
                 props.id ||
                 `node-${Math.random().toString(36).substring(2, 9)}`,
-              name: props.name || "Unnamed Location",
+              name: props.name || 'Unnamed Location',
               isDestination: !!props.isDestination,
               coordinates: geoCoords as [number, number],
               description: props.description,
-              category: props.category || "General",
+              category: props.category || 'General',
               imageUrl: props.imageUrl,
             };
 
             // Find and set main gate as default starting point
-            if (props.category === "Gates" && props.id === startingLocationId) {
+            if (props.category === 'Gates' && props.id === startingLocationId) {
               mainGate = node;
             }
 
@@ -1011,25 +1026,25 @@ const CampusMap: React.FC<MapProps> = ({
           } else {
             nonPointCount++;
             logDebug(
-              `Node ${props.id || "unknown"} is not a Point geometry: ${geometry.getType()}`,
+              `Node ${props.id || 'unknown'} is not a Point geometry: ${geometry.getType()}`
             );
           }
         } else if (!geometry && props.isDestination) {
           geometryIssueCount++;
           logDebug(
-            `Destination node ${props.id || "unknown"} has no geometry!`,
+            `Destination node ${props.id || 'unknown'} has no geometry!`
           );
         }
       });
 
       logDebug(
-        `Destination stats - Total: ${destinationCount}, Loaded: ${loadedDestinations.length}, Geometry issues: ${geometryIssueCount}, Non-point: ${nonPointCount}`,
+        `Destination stats - Total: ${destinationCount}, Loaded: ${loadedDestinations.length}, Geometry issues: ${geometryIssueCount}, Non-point: ${nonPointCount}`
       );
 
       // If no destinations were loaded, try to load them directly from the GeoJSON file
       if (loadedDestinations.length === 0) {
         logDebug(
-          "No destinations loaded from features. Attempting direct GeoJSON load...",
+          'No destinations loaded from features. Attempting direct GeoJSON load...'
         );
 
         fetch(nodesUrl)
@@ -1045,17 +1060,17 @@ const CampusMap: React.FC<MapProps> = ({
                   id:
                     feature.properties.id ||
                     `node-${Math.random().toString(36).substring(2, 9)}`,
-                  name: feature.properties.name || "Unnamed Location",
+                  name: feature.properties.name || 'Unnamed Location',
                   isDestination: true,
                   coordinates: coords as [number, number],
                   description: feature.properties.description,
-                  category: feature.properties.category || "General",
+                  category: feature.properties.category || 'General',
                   imageUrl: feature.properties.imageUrl,
                 };
 
                 // Find and set main gate as default starting point
                 if (
-                  feature.properties.category === "Gates" &&
+                  feature.properties.category === 'Gates' &&
                   feature.properties.id === startingLocationId
                 ) {
                   mainGate = node;
@@ -1066,7 +1081,7 @@ const CampusMap: React.FC<MapProps> = ({
             });
 
             logDebug(
-              `Direct load destinations: ${directLoadedDestinations.length}`,
+              `Direct load destinations: ${directLoadedDestinations.length}`
             );
 
             if (directLoadedDestinations.length > 0) {
@@ -1092,7 +1107,8 @@ const CampusMap: React.FC<MapProps> = ({
       logDebug(`Loaded ${loadedDestinations.length} destinations`);
 
       // Check for pending route from URL parameters
-      const pendingRouteData = sessionStorage.getItem("pendingRoute");
+      const pendingRouteData = sessionStorage.getItem('pendingRoute');
+
       if (pendingRouteData) {
         try {
           const routeData: RouteData = JSON.parse(pendingRouteData);
@@ -1120,14 +1136,14 @@ const CampusMap: React.FC<MapProps> = ({
           }
 
           // Clear the pending route
-          sessionStorage.removeItem("pendingRoute");
+          sessionStorage.removeItem('pendingRoute');
         } catch (error) {
-          console.error("Error processing pending route:", error);
+          console.error('Error processing pending route:', error);
         }
       }
     });
 
-    vectorSource.on("featuresloadend", () => {
+    vectorSource.on('featuresloadend', () => {
       try {
         const extent: Extent = vectorSource.getExtent();
         const features = vectorSource.getFeatures();
@@ -1141,6 +1157,7 @@ const CampusMap: React.FC<MapProps> = ({
             extent[2] + 500,
             extent[3] + 500,
           ];
+
           schoolBoundaryRef.current = expandedBoundary;
         }
 
@@ -1148,18 +1165,19 @@ const CampusMap: React.FC<MapProps> = ({
           features.forEach((feature: Feature, index: number) => {
             try {
               const properties = feature.getProperties();
+
               debugLog(
                 debugInfoRef,
                 debug,
                 `Feature ${index + 1} Properties: ${JSON.stringify(properties)}`,
                 () => {
                   setDebugInfo([...debugInfoRef.current]);
-                },
+                }
               );
             } catch (propError) {
               console.error(
                 `Property processing error for feature ${index}:`,
-                propError,
+                propError
               );
             }
           });
@@ -1189,7 +1207,7 @@ const CampusMap: React.FC<MapProps> = ({
 
           lastValidCenterRef.current = view.getCenter() || null;
         } else {
-          console.error("Invalid map extent:", extent);
+          console.error('Invalid map extent:', extent);
           view.setCenter(fromLonLat(centerCoordinates));
           view.setZoom(initialZoom);
         }
@@ -1198,20 +1216,21 @@ const CampusMap: React.FC<MapProps> = ({
           debugInfoRef,
           debug,
           `Loaded ${features.length} features successfully`,
-          () => setDebugInfo([...debugInfoRef.current]),
+          () => setDebugInfo([...debugInfoRef.current])
         );
       } catch (error) {
-        console.error("Error processing map extent:", error);
+        console.error('Error processing map extent:', error);
       }
     });
 
     // FIX: Improve the pointerdrag handler to avoid state updates
     let isUpdatingCenter = false;
 
-    map.on("pointerdrag", () => {
+    map.on('pointerdrag', () => {
       if (isUpdatingCenter) return;
 
       const currentCenter = view.getCenter();
+
       if (!currentCenter || !expandedExtentRef.current) return;
 
       if (!containsCoordinate(expandedExtentRef.current, currentCenter)) {
@@ -1221,11 +1240,11 @@ const CampusMap: React.FC<MapProps> = ({
           const clampedCenter = [
             Math.max(
               expandedExtentRef.current[0],
-              Math.min(currentCenter[0], expandedExtentRef.current[2]),
+              Math.min(currentCenter[0], expandedExtentRef.current[2])
             ),
             Math.max(
               expandedExtentRef.current[1],
-              Math.min(currentCenter[1], expandedExtentRef.current[3]),
+              Math.min(currentCenter[1], expandedExtentRef.current[3])
             ),
           ];
 
@@ -1248,19 +1267,20 @@ const CampusMap: React.FC<MapProps> = ({
       }
     });
 
-    vectorSource.on("featuresloaderror", (error: any) => {
-      console.error("Features load error:", error);
-      debugLog(debugInfoRef, debug, "Failed to load map features", () =>
-        setDebugInfo([...debugInfoRef.current]),
+    vectorSource.on('featuresloaderror', (error: any) => {
+      console.error('Features load error:', error);
+      debugLog(debugInfoRef, debug, 'Failed to load map features', () =>
+        setDebugInfo([...debugInfoRef.current])
       );
       locationErrorRef.current =
-        "Failed to load map data. Please try again later.";
+        'Failed to load map data. Please try again later.';
     });
 
     const handleResize = () => {
       try {
         map.updateSize();
         const extent: Extent = vectorSource.getExtent();
+
         if (extent && extent.every((v) => isFinite(v))) {
           view.fit(extent, {
             padding: [20, 20, 20, 20],
@@ -1268,10 +1288,11 @@ const CampusMap: React.FC<MapProps> = ({
           });
         }
       } catch (resizeError) {
-        console.error("Resize error:", resizeError);
+        console.error('Resize error:', resizeError);
       }
     };
-    window.addEventListener("resize", handleResize);
+
+    window.addEventListener('resize', handleResize);
 
     (window as any).mapEditor = {
       toggleEditMode,
@@ -1284,11 +1305,11 @@ const CampusMap: React.FC<MapProps> = ({
           setSelectedFeature,
           debugInfoRef,
           debug,
-          () => setDebugInfo([...debugInfoRef.current]),
+          () => setDebugInfo([...debugInfoRef.current])
         ),
-      exportGeoJSON: (filename = "map_export.geojson") => {
+      exportGeoJSON: (filename = 'map_export.geojson') => {
         exportGeoJSON(vectorSource, filename, debugInfoRef, debug, () =>
-          setDebugInfo([...debugInfoRef.current]),
+          setDebugInfo([...debugInfoRef.current])
         );
       },
     };
@@ -1303,7 +1324,7 @@ const CampusMap: React.FC<MapProps> = ({
         clearInterval(locationNodeIntervalRef.current);
         locationNodeIntervalRef.current = null;
       }
-      window.removeEventListener("resize", handleResize);
+      window.removeEventListener('resize', handleResize);
       delete (window as any).mapEditor;
       map.setTarget(undefined);
     };
@@ -1311,6 +1332,7 @@ const CampusMap: React.FC<MapProps> = ({
 
   useEffect(() => {
     const cleanup = initializeMap();
+
     return () => {
       if (cleanup) cleanup();
     };
@@ -1326,6 +1348,7 @@ const CampusMap: React.FC<MapProps> = ({
         </div>
       );
     }
+
     return null;
   }, [isOutsideSchool, locationTrackingEnabled]);
 
@@ -1338,6 +1361,7 @@ const CampusMap: React.FC<MapProps> = ({
         </div>
       );
     }
+
     return null;
   }, [locationError]);
 
@@ -1359,6 +1383,7 @@ const CampusMap: React.FC<MapProps> = ({
         </div>
       );
     }
+
     return null;
   }, [locationPermissionRequested, requestLocationPermission]);
 
@@ -1366,12 +1391,12 @@ const CampusMap: React.FC<MapProps> = ({
   const EditControlsComponent = useMemo(
     () => (
       <EditControls
+        drawType={drawType}
+        handleDeleteSelected={handleDeleteSelected}
+        handleDrawInteractionToggle={handleDrawInteractionToggle}
+        handleExportMap={handleExportMap}
         isEditMode={isEditMode}
         toggleEditMode={toggleEditMode}
-        drawType={drawType}
-        handleDrawInteractionToggle={handleDrawInteractionToggle}
-        handleDeleteSelected={handleDeleteSelected}
-        handleExportMap={handleExportMap}
       />
     ),
     [
@@ -1381,7 +1406,7 @@ const CampusMap: React.FC<MapProps> = ({
       handleDrawInteractionToggle,
       handleDeleteSelected,
       handleExportMap,
-    ],
+    ]
   );
 
   // Memoize customization panel
@@ -1390,12 +1415,13 @@ const CampusMap: React.FC<MapProps> = ({
       return (
         <CustomizationPanel
           featureProperties={featureProperties}
-          updateFeatureProperty={updateFeatureProperty}
           markerSizeOptions={markerSizeOptions}
+          updateFeatureProperty={updateFeatureProperty}
           onClose={handleCloseCustomizePanel}
         />
       );
     }
+
     return null;
   }, [
     showCustomizePanel,
@@ -1424,7 +1450,7 @@ const CampusMap: React.FC<MapProps> = ({
         </div>
       </div>
     ),
-    [currentLocation, locationPermissionRequested, defaultStartLocation],
+    [currentLocation, locationPermissionRequested, defaultStartLocation]
   );
 
   // Memoize destination selector button
@@ -1436,23 +1462,23 @@ const CampusMap: React.FC<MapProps> = ({
           onClick={handleShowDestinationSelector}
         >
           <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
             fill="none"
+            height="24"
             stroke="currentColor"
-            strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
+            strokeWidth="2"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
           >
-            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-            <circle cx="12" cy="10" r="3"></circle>
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+            <circle cx="12" cy="10" r="3" />
           </svg>
         </button>
       </div>
     ),
-    [handleShowDestinationSelector],
+    [handleShowDestinationSelector]
   );
 
   // Memoize destination selector
@@ -1461,21 +1487,22 @@ const CampusMap: React.FC<MapProps> = ({
       return (
         <div className="absolute top-4 left-4 z-40">
           <DestinationSelector
-            destinations={destinations}
-            onSelect={handleDestinationSelect}
-            onClose={handleCloseDestinationSelector}
             categories={[
-              "Gates",
-              "Main Buildings",
-              "Maritime",
-              "Business",
-              "Facilities",
-              "Sports Facilities",
+              'Gates',
+              'Main Buildings',
+              'Maritime',
+              'Business',
+              'Facilities',
+              'Sports Facilities',
             ]}
+            destinations={destinations}
+            onClose={handleCloseDestinationSelector}
+            onSelect={handleDestinationSelect}
           />
         </div>
       );
     }
+
     return null;
   }, [
     showDestinationSelector,
@@ -1501,6 +1528,7 @@ const CampusMap: React.FC<MapProps> = ({
         </div>
       );
     }
+
     return null;
   }, [debug, destinations]);
 
@@ -1509,14 +1537,15 @@ const CampusMap: React.FC<MapProps> = ({
     if (showRouteOverlay && selectedDestination) {
       return (
         <RouteOverlay
-          startNode={currentLocation || defaultStartLocation}
           endNode={selectedDestination}
           routeInfo={routeInfo}
+          startNode={currentLocation || defaultStartLocation}
           onCancel={clearRoute}
           onGenerateQR={handleGenerateQR}
         />
       );
     }
+
     return null;
   }, [
     showRouteOverlay,
@@ -1533,6 +1562,7 @@ const CampusMap: React.FC<MapProps> = ({
     if (debug) {
       return <DebugPanel debugInfo={debugInfo} />;
     }
+
     return null;
   }, [debug, debugInfo]);
 
@@ -1549,17 +1579,17 @@ const CampusMap: React.FC<MapProps> = ({
               onClick={() => router.back()}
             >
               <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
                 fill="none"
+                height="24"
                 stroke="currentColor"
-                strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+                width="24"
+                xmlns="http://www.w3.org/2000/svg"
               >
-                <path d="m15 18-6-6 6-6"></path>
+                <path d="m15 18-6-6 6-6" />
               </svg>
             </button>
 
@@ -1568,7 +1598,7 @@ const CampusMap: React.FC<MapProps> = ({
                 ? `You have arrived at ${selectedDestination?.name}!`
                 : selectedDestination
                   ? `Navigate to ${selectedDestination.name}`
-                  : "Campus Map"}
+                  : 'Campus Map'}
             </h1>
 
             <button
@@ -1576,6 +1606,7 @@ const CampusMap: React.FC<MapProps> = ({
               onClick={() => {
                 if (mapInstanceRef.current && currentLocation) {
                   const coords = fromLonLat(currentLocation.coordinates);
+
                   mapInstanceRef.current.getView().setCenter(coords);
                   mapInstanceRef.current.getView().setZoom(18);
                 } else {
@@ -1584,26 +1615,26 @@ const CampusMap: React.FC<MapProps> = ({
               }}
             >
               <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
                 fill="none"
+                height="20"
                 stroke="currentColor"
-                strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+                width="20"
+                xmlns="http://www.w3.org/2000/svg"
               >
-                <circle cx="12" cy="12" r="10"></circle>
-                <circle cx="12" cy="12" r="1"></circle>
-                <path d="M12 2v4"></path>
-                <path d="M12 18v4"></path>
-                <path d="M4.93 4.93l2.83 2.83"></path>
-                <path d="M16.24 16.24l2.83 2.83"></path>
-                <path d="M2 12h4"></path>
-                <path d="M18 12h4"></path>
-                <path d="M4.93 19.07l2.83-2.83"></path>
-                <path d="M16.24 7.76l2.83-2.83"></path>
+                <circle cx="12" cy="12" r="10" />
+                <circle cx="12" cy="12" r="1" />
+                <path d="M12 2v4" />
+                <path d="M12 18v4" />
+                <path d="M4.93 4.93l2.83 2.83" />
+                <path d="M16.24 16.24l2.83 2.83" />
+                <path d="M2 12h4" />
+                <path d="M18 12h4" />
+                <path d="M4.93 19.07l2.83-2.83" />
+                <path d="M16.24 7.76l2.83-2.83" />
               </svg>
             </button>
           </div>
@@ -1615,6 +1646,7 @@ const CampusMap: React.FC<MapProps> = ({
           onClick={() => {
             if (mapInstanceRef.current && currentLocation) {
               const coords = fromLonLat(currentLocation.coordinates);
+
               mapInstanceRef.current.getView().setCenter(coords);
               mapInstanceRef.current.getView().setZoom(18);
             } else {
@@ -1623,26 +1655,26 @@ const CampusMap: React.FC<MapProps> = ({
           }}
         >
           <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
             fill="none"
+            height="20"
             stroke="#4b5563"
-            strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
+            strokeWidth="2"
+            viewBox="0 0 24 24"
+            width="20"
+            xmlns="http://www.w3.org/2000/svg"
           >
-            <circle cx="12" cy="12" r="10"></circle>
-            <circle cx="12" cy="12" r="1"></circle>
-            <path d="M12 2v4"></path>
-            <path d="M12 18v4"></path>
-            <path d="M4.93 4.93l2.83 2.83"></path>
-            <path d="M16.24 16.24l2.83 2.83"></path>
-            <path d="M2 12h4"></path>
-            <path d="M18 12h4"></path>
-            <path d="M4.93 19.07l2.83-2.83"></path>
-            <path d="M16.24 7.76l2.83-2.83"></path>
+            <circle cx="12" cy="12" r="10" />
+            <circle cx="12" cy="12" r="1" />
+            <path d="M12 2v4" />
+            <path d="M12 18v4" />
+            <path d="M4.93 4.93l2.83 2.83" />
+            <path d="M16.24 16.24l2.83 2.83" />
+            <path d="M2 12h4" />
+            <path d="M18 12h4" />
+            <path d="M4.93 19.07l2.83-2.83" />
+            <path d="M16.24 7.76l2.83-2.83" />
           </svg>
         </button>
 
@@ -1651,7 +1683,7 @@ const CampusMap: React.FC<MapProps> = ({
           <div
             className={`fixed bottom-0 left-0 right-0 bg-white shadow-lg z-40 rounded-t-xl`}
           >
-            <div className="w-12 h-1 bg-gray-300 rounded-full mx-auto my-2"></div>
+            <div className="w-12 h-1 bg-gray-300 rounded-full mx-auto my-2" />
 
             <div className="p-4 border-b border-gray-200">
               <h2 className="text-xl font-bold text-gray-900">
@@ -1692,10 +1724,10 @@ const CampusMap: React.FC<MapProps> = ({
               )}
 
               <button
-                className={`w-full py-2 px-3 rounded-lg flex items-center justify-center mt-3 ${isMobileMenuOpen ? "bg-blue-500 text-white" : "bg-gray-100 text-gray-700"}`}
+                className={`w-full py-2 px-3 rounded-lg flex items-center justify-center mt-3 ${isMobileMenuOpen ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-700'}`}
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               >
-                {isMobileMenuOpen ? "Hide Directions" : "Show Directions"}
+                {isMobileMenuOpen ? 'Hide Directions' : 'Show Directions'}
               </button>
             </div>
 
@@ -1709,23 +1741,23 @@ const CampusMap: React.FC<MapProps> = ({
                   <li className="flex items-start">
                     <div className="w-8 h-8 rounded-full bg-green-100 text-green-600 flex items-center justify-center mr-3 flex-shrink-0">
                       <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
                         fill="none"
+                        height="16"
                         stroke="currentColor"
-                        strokeWidth="2"
                         strokeLinecap="round"
                         strokeLinejoin="round"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
+                        width="16"
+                        xmlns="http://www.w3.org/2000/svg"
                       >
-                        <path d="M22 10L12 2 2 10"></path>
-                        <path d="M12 2v20"></path>
+                        <path d="M22 10L12 2 2 10" />
+                        <path d="M12 2v20" />
                       </svg>
                     </div>
                     <div>
                       <p className="font-medium text-gray-900">
-                        Start at {currentLocation?.name || "current location"}
+                        Start at {currentLocation?.name || 'current location'}
                       </p>
                       <p className="text-sm text-gray-600">
                         Head toward {selectedDestination.name}
@@ -1736,17 +1768,17 @@ const CampusMap: React.FC<MapProps> = ({
                   <li className="flex items-start">
                     <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center mr-3 flex-shrink-0">
                       <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
                         fill="none"
+                        height="16"
                         stroke="currentColor"
-                        strokeWidth="2"
                         strokeLinecap="round"
                         strokeLinejoin="round"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
+                        width="16"
+                        xmlns="http://www.w3.org/2000/svg"
                       >
-                        <polyline points="9 18 15 12 9 6"></polyline>
+                        <polyline points="9 18 15 12 9 6" />
                       </svg>
                     </div>
                     <div>
@@ -1756,7 +1788,7 @@ const CampusMap: React.FC<MapProps> = ({
                       <p className="text-sm text-gray-600">
                         {routeInfo?.distance
                           ? `${Math.round(routeInfo.distance * 0.4)}m`
-                          : "100m"}
+                          : '100m'}
                       </p>
                     </div>
                   </li>
@@ -1764,18 +1796,18 @@ const CampusMap: React.FC<MapProps> = ({
                   <li className="flex items-start">
                     <div className="w-8 h-8 rounded-full bg-red-100 text-red-600 flex items-center justify-center mr-3 flex-shrink-0">
                       <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
                         fill="none"
+                        height="16"
                         stroke="currentColor"
-                        strokeWidth="2"
                         strokeLinecap="round"
                         strokeLinejoin="round"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
+                        width="16"
+                        xmlns="http://www.w3.org/2000/svg"
                       >
-                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                        <circle cx="12" cy="10" r="3"></circle>
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                        <circle cx="12" cy="10" r="3" />
                       </svg>
                     </div>
                     <div>
@@ -1802,8 +1834,8 @@ const CampusMap: React.FC<MapProps> = ({
         ref={mapRef}
         className="w-full h-full absolute top-0 left-0"
         style={{
-          boxShadow: mobileMode ? "none" : "0 4px 20px rgba(0,0,0,0.15)",
-          borderRadius: mobileMode ? "0" : "12px",
+          boxShadow: mobileMode ? 'none' : '0 4px 20px rgba(0,0,0,0.15)',
+          borderRadius: mobileMode ? '0' : '12px',
         }}
       />
 
@@ -1825,11 +1857,11 @@ const CampusMap: React.FC<MapProps> = ({
       {RouteOverlayComponent}
       {showQRModal && selectedDestination && (
         <KioskQRModal
-          qrCodeUrl={qrCodeUrl}
+          autoCloseTime={60} // Seconds before auto-close
           destination={selectedDestination}
+          qrCodeUrl={qrCodeUrl}
           routeInfo={routeInfo}
           onClose={closeQRModal}
-          autoCloseTime={60} // Seconds before auto-close
         />
       )}
 
@@ -1837,7 +1869,7 @@ const CampusMap: React.FC<MapProps> = ({
       {isGenerating && (
         <div className="absolute inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-xl flex flex-col items-center">
-            <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+            <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4" />
             <p className="text-gray-800 font-medium">Generating QR Code...</p>
           </div>
         </div>

@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useState, useEffect, useRef, useTransition } from "react";
-import { usePathname, useRouter } from "next/navigation";
-import { Modal, ModalContent, ModalBody } from "@heroui/modal";
-import { Image } from "@heroui/image";
+import { useState, useEffect, useRef, useTransition } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import { Modal, ModalContent, ModalBody } from '@heroui/modal';
+import { Image } from '@heroui/image';
 
 interface FeatureItem {
   id: number;
@@ -25,27 +25,27 @@ export default function AFKModal() {
   const features: FeatureItem[] = [
     {
       id: 1,
-      title: "Search Location",
-      subtitle: "Find your Way Effortlessly",
+      title: 'Search Location',
+      subtitle: 'Find your Way Effortlessly',
       description:
-        "Quickly locate buildings, rooms, and facilities with our intuitive search tool",
-      image: "/idlepic.png",
+        'Quickly locate buildings, rooms, and facilities with our intuitive search tool',
+      image: '/idlepic.png',
     },
     {
       id: 2,
-      title: "Enrollment Stations",
-      subtitle: "Easy Registration Process",
+      title: 'Enrollment Stations',
+      subtitle: 'Easy Registration Process',
       description:
-        "Quickly locate buildings, rooms, and facilities with our intuitive search tool",
-      image: "/idlepic2.png",
+        'Quickly locate buildings, rooms, and facilities with our intuitive search tool',
+      image: '/idlepic2.png',
     },
     {
       id: 3,
-      title: "Select Specific Gates",
-      subtitle: "Streamlined Access Points",
+      title: 'Select Specific Gates',
+      subtitle: 'Streamlined Access Points',
       description:
-        "Quickly locate buildings, rooms, and facilities with our intuitive search tool",
-      image: "/idlepic3.png",
+        'Quickly locate buildings, rooms, and facilities with our intuitive search tool',
+      image: '/idlepic3.png',
     },
   ];
 
@@ -66,16 +66,17 @@ export default function AFKModal() {
     if (featureIntervalRef.current) clearInterval(featureIntervalRef.current);
     startFeatureCarousel();
   };
+
   useEffect(() => {
     resetTimer();
 
     const activityEvents = [
-      "mousemove",
-      "mousedown",
-      "keypress",
-      "touchstart",
-      "scroll",
-      "click",
+      'mousemove',
+      'mousedown',
+      'keypress',
+      'touchstart',
+      'scroll',
+      'click',
     ];
 
     const handleUserActivity = () => {
@@ -90,14 +91,14 @@ export default function AFKModal() {
     });
 
     const handleClick = () => {
-      if (isAFK && pathname === "/navigation") {
+      if (isAFK && pathname === '/navigation') {
         startTransition(() => {
-          router.push("/");
+          router.push('/');
         });
       }
     };
 
-    document.addEventListener("click", handleClick);
+    document.addEventListener('click', handleClick);
 
     // Clean up all event listeners
     return () => {
@@ -107,7 +108,7 @@ export default function AFKModal() {
         document.removeEventListener(event, handleUserActivity);
       });
 
-      document.removeEventListener("click", handleClick);
+      document.removeEventListener('click', handleClick);
     };
   }, [pathname, isAFK, router]);
 
@@ -130,7 +131,7 @@ export default function AFKModal() {
   }, [isAFK]);
 
   return (
-    <Modal isOpen={isAFK} onOpenChange={setIsAFK} size="full" backdrop="opaque">
+    <Modal backdrop="opaque" isOpen={isAFK} size="full" onOpenChange={setIsAFK}>
       <ModalContent className="fixed inset-0 flex items-center justify-center">
         <section className="w-full h-full bg-idlebg bg-cover bg-no-repeat bg-center flex flex-col items-center justify-center px-4 sm:px-8 md:px-12 lg:px-16 py-8">
           <ModalBody className="w-full max-w-7xl mx-auto">
@@ -160,16 +161,16 @@ export default function AFKModal() {
                           key={feature.id}
                           className={`absolute inset-0 transition-all duration-700 ease-in-out transform ${
                             index === activeFeature
-                              ? "opacity-100 scale-100"
-                              : "opacity-0 scale-95"
+                              ? 'opacity-100 scale-100'
+                              : 'opacity-0 scale-95'
                           }`}
                         >
                           <Image
-                            src={feature.image}
                             alt={feature.title}
-                            width={500}
-                            height={500}
                             className="object-contain w-full h-full rounded-lg shadow-lg"
+                            height={500}
+                            src={feature.image}
+                            width={500}
                           />
                         </div>
                       ))}
@@ -182,8 +183,8 @@ export default function AFKModal() {
                         key={feature.id}
                         className={`transition-all duration-700 ease-in-out ${
                           index === activeFeature
-                            ? "opacity-100 translate-y-0"
-                            : "opacity-0 translate-y-8 absolute"
+                            ? 'opacity-100 translate-y-0'
+                            : 'opacity-0 translate-y-8 absolute'
                         }`}
                       >
                         <h3 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-white">
@@ -205,13 +206,13 @@ export default function AFKModal() {
                   {features.map((_, index) => (
                     <button
                       key={index}
-                      onClick={() => handleFeatureChange(index)}
+                      aria-label={`View feature ${index + 1}`}
                       className={`w-3 h-3 md:w-4 md:h-4 rounded-full transition-all duration-300 ${
                         activeFeature === index
-                          ? "bg-white scale-125"
-                          : "bg-white/50 hover:bg-white/70"
+                          ? 'bg-white scale-125'
+                          : 'bg-white/50 hover:bg-white/70'
                       }`}
-                      aria-label={`View feature ${index + 1}`}
+                      onClick={() => handleFeatureChange(index)}
                     />
                   ))}
                 </div>

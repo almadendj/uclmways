@@ -1,19 +1,19 @@
-import { Feature } from "ol";
-import GeoJSON from "ol/format/GeoJSON";
-import LineString from "ol/geom/LineString";
-import { fromLonLat, toLonLat } from "ol/proj";
-import { Vector as VectorSource } from "ol/source";
-import { Vector as VectorLayer } from "ol/layer";
-import { Style, Stroke } from "ol/style";
-import { MutableRefObject } from "react";
-import { debugLog } from "./components";
-import Point from "ol/geom/Point";
-import { Geometry } from "ol/geom";
+import { Feature } from 'ol';
+import GeoJSON from 'ol/format/GeoJSON';
+import LineString from 'ol/geom/LineString';
+import { toLonLat } from 'ol/proj';
+import { Vector as VectorSource } from 'ol/source';
+import { Vector as VectorLayer } from 'ol/layer';
+import { Style, Stroke } from 'ol/style';
+import { MutableRefObject } from 'react';
+import Point from 'ol/geom/Point';
+
+import { debugLog } from './components';
 
 export interface Road {
   id: string;
   name: string;
-  type: "main" | "secondary" | "path";
+  type: 'main' | 'secondary' | 'path';
   from: string;
   to: string;
   coordinates: number[][];
@@ -38,6 +38,7 @@ export const findClosestNode = (
   nodesSource: VectorSource<Feature>
 ): RoadNode | null => {
   const features = nodesSource.getFeatures();
+
   if (!features.length) return null;
 
   let closestNode: RoadNode | null = null;
@@ -46,6 +47,7 @@ export const findClosestNode = (
   features.forEach((feature) => {
     const properties = feature.getProperties();
     const geometry = feature.getGeometry();
+
     if (!geometry) return;
 
     let coordinates: number[] = [0, 0];
@@ -58,6 +60,7 @@ export const findClosestNode = (
       try {
         // This is unsafe but we're checking the actual type at runtime
         const coords = (geometry as any).getFirstCoordinate?.();
+
         if (coords) {
           coordinates = coords;
         } else {
@@ -81,7 +84,7 @@ export const findClosestNode = (
       closestNode = {
         id:
           properties.id || `node-${Math.random().toString(36).substring(2, 9)}`,
-        name: properties.name || "Unnamed Node",
+        name: properties.name || 'Unnamed Node',
         isDestination: !!properties.isDestination,
         coordinates: geoCoords as [number, number],
         description: properties.description,
@@ -112,6 +115,7 @@ export const findShortestPath = (
   nodesSource.getFeatures().forEach((feature) => {
     const props = feature.getProperties();
     const geometry = feature.getGeometry();
+
     if (props.id && geometry) {
       let coordinates: number[] = [0, 0];
 
@@ -128,30 +132,35 @@ export const findShortestPath = (
     }
   });
 
-  nodesSource.on("featuresloadend", () => {
-    console.log("🚩 roadsystem.txt - featuresloadend triggered");
+  nodesSource.on('featuresloadend', () => {
+    console.log('🚩 roadsystem.txt - featuresloadend triggered');
     const features = nodesSource.getFeatures();
-    console.log("🚩 roadsystem.txt - features count:", features.length);
+
+    console.log('🚩 roadsystem.txt - features count:', features.length);
   });
 
   // Add edges to the graph
   roadsSource.getFeatures().forEach((feature) => {
     const props = feature.getProperties();
+
     if (props.from && props.to) {
       const geometry = feature.getGeometry();
+
       if (!geometry) return;
 
       // Calculate road segment length
       let distance = 0;
+
       if (geometry instanceof LineString) {
         distance = geometry.getLength();
-      } else if (geometry.getType() === "LineString") {
+      } else if (geometry.getType() === 'LineString') {
         try {
           // Use type assertion for LineString
           const lineString = geometry as LineString;
+
           distance = lineString.getLength();
         } catch (error) {
-          console.error("Error calculating line length:", error);
+          console.error('Error calculating line length:', error);
         }
       }
 
@@ -163,9 +172,9 @@ export const findShortestPath = (
       graph[props.to][props.from] = distance;
     }
 
-    console.log("😊😊Graph structure:", JSON.stringify(graph));
-    console.log("Looking for path between:", startNodeId, "and", endNodeId);
-    console.log("Nodes available:", Object.keys(graph));
+    console.log('😊😊Graph structure:', JSON.stringify(graph));
+    console.log('Looking for path between:', startNodeId, 'and', endNodeId);
+    console.log('Nodes available:', Object.keys(graph));
   });
 
   // Check if both nodes exist in the graph
@@ -176,6 +185,7 @@ export const findShortestPath = (
       `Cannot find path: Node ${!graph[startNodeId] ? startNodeId : endNodeId} not found in graph`,
       updateDebugCallback
     );
+
     return [];
   }
 
@@ -236,13 +246,14 @@ export const findShortestPath = (
       `No path found between ${startNodeId} and ${endNodeId}`,
       updateDebugCallback
     );
+
     return [];
   }
 
   // Construct the path
   while (current) {
     path.unshift(current);
-    current = previous[current] || "";
+    current = previous[current] || '';
     if (current === startNodeId) {
       path.unshift(current);
       break;
@@ -260,6 +271,7 @@ export const findShortestPath = (
     // Find the road segment between these nodes
     const roadSegment = roadsSource.getFeatures().find((feature) => {
       const props = feature.getProperties();
+
       return (
         (props.from === fromNode && props.to === toNode) ||
         (props.from === toNode && props.to === fromNode)
@@ -292,8 +304,8 @@ export const setupRoadSystem = (
   const roadsSource = new VectorSource({
     url: roadsUrl,
     format: new GeoJSON({
-      dataProjection: "EPSG:4326",
-      featureProjection: "EPSG:3857",
+      dataProjection: 'EPSG:4326',
+      featureProjection: 'EPSG:3857',
     }),
   });
 
@@ -301,8 +313,8 @@ export const setupRoadSystem = (
   const nodesSource = new VectorSource({
     url: nodesUrl,
     format: new GeoJSON({
-      dataProjection: "EPSG:4326",
-      featureProjection: "EPSG:3857",
+      dataProjection: 'EPSG:4326',
+      featureProjection: 'EPSG:3857',
     }),
   });
 
@@ -311,24 +323,24 @@ export const setupRoadSystem = (
     source: roadsSource,
     style: (feature) => {
       const properties = feature.getProperties();
-      const roadType = properties.type || "secondary";
+      const roadType = properties.type || 'secondary';
 
       // Different styling based on road type
-      let color = "#555555";
+      let color = '#555555';
       let width = 3;
       let lineDash: number[] = [];
 
       switch (roadType) {
-        case "main":
-          color = "#333333";
+        case 'main':
+          color = '#333333';
           width = 5;
           break;
-        case "secondary":
-          color = "#666666";
+        case 'secondary':
+          color = '#666666';
           width = 3;
           break;
-        case "path":
-          color = "#888888";
+        case 'path':
+          color = '#888888';
           width = 2;
           lineDash = [4, 4];
           break;
@@ -346,8 +358,9 @@ export const setupRoadSystem = (
   });
 
   // Load initial roads data
-  roadsSource.on("featuresloadend", () => {
+  roadsSource.on('featuresloadend', () => {
     const features = roadsSource.getFeatures();
+
     debugLog(
       debugInfoRef,
       debug,
@@ -357,7 +370,7 @@ export const setupRoadSystem = (
   });
 
   // Handle potential errors loading roads
-  roadsSource.on("featuresloaderror", (error: any) => {
+  roadsSource.on('featuresloaderror', (error: any) => {
     debugLog(
       debugInfoRef,
       debug,
@@ -367,14 +380,16 @@ export const setupRoadSystem = (
   });
 
   // Load initial nodes data
-  nodesSource.on("featuresloadend", () => {
+  nodesSource.on('featuresloadend', () => {
     const features = nodesSource.getFeatures();
 
     // Count destinations for debugging
     const destinations = features.filter((feature) => {
       const props = feature.getProperties();
+
       return props.isDestination === true;
     });
+
     console.log(
       `✅ featuresloadend in road system triggered ${features}, total features: ${features.length}`
     );
@@ -394,9 +409,11 @@ export const setupRoadSystem = (
     if (debug) {
       features.forEach((feature, index) => {
         const props = feature.getProperties();
+
         if (props.isDestination) {
           const geom = feature.getGeometry();
-          const geomType = geom ? geom.getType() : "no geometry";
+          const geomType = geom ? geom.getType() : 'no geometry';
+
           debugLog(
             debugInfoRef,
             debug,
@@ -409,7 +426,7 @@ export const setupRoadSystem = (
   });
 
   // Handle potential errors loading nodes
-  nodesSource.on("featuresloaderror", (error: any) => {
+  nodesSource.on('featuresloaderror', (error: any) => {
     debugLog(
       debugInfoRef,
       debug,

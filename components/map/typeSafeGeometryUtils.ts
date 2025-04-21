@@ -1,7 +1,7 @@
-import { Geometry } from "ol/geom";
-import LineString from "ol/geom/LineString";
-import Point from "ol/geom/Point";
-import { Feature } from "ol";
+import { Geometry } from 'ol/geom';
+import LineString from 'ol/geom/LineString';
+import Point from 'ol/geom/Point';
+import { Feature } from 'ol';
 
 /**
  * Type-safe utility to get coordinates from any geometry
@@ -21,25 +21,28 @@ export const getSafeCoordinates = (
 
     if (geometry instanceof LineString) {
       const firstCoord = geometry.getFirstCoordinate();
+
       return firstCoord || null;
     }
 
     // Fallback for other geometry types
-    if (typeof (geometry as any).getFirstCoordinate === "function") {
+    if (typeof (geometry as any).getFirstCoordinate === 'function') {
       return (geometry as any).getFirstCoordinate();
     }
 
-    if (typeof (geometry as any).getCoordinates === "function") {
+    if (typeof (geometry as any).getCoordinates === 'function') {
       const coords = (geometry as any).getCoordinates();
+
       if (Array.isArray(coords) && coords.length > 0) {
         if (Array.isArray(coords[0])) {
           return coords[0];
         }
+
         return coords;
       }
     }
   } catch (error) {
-    console.error("Error getting coordinates from geometry:", error);
+    console.error('Error getting coordinates from geometry:', error);
   }
 
   return null;
@@ -62,11 +65,11 @@ export const getSafeLength = (
     }
 
     // Fallback for other geometry types
-    if (typeof (geometry as any).getLength === "function") {
+    if (typeof (geometry as any).getLength === 'function') {
       return (geometry as any).getLength();
     }
   } catch (error) {
-    console.error("Error calculating geometry length:", error);
+    console.error('Error calculating geometry length:', error);
   }
 
   return 0;
@@ -81,13 +84,14 @@ export const getSafeLength = (
 export const getSafeGeometryType = (
   geometry: Geometry | null | undefined
 ): string => {
-  if (!geometry) return "unknown";
+  if (!geometry) return 'unknown';
 
   try {
     return geometry.getType();
   } catch (error) {
-    console.error("Error getting geometry type:", error);
-    return "unknown";
+    console.error('Error getting geometry type:', error);
+
+    return 'unknown';
   }
 };
 
@@ -102,6 +106,7 @@ export const calculatePathLength = (features: Feature[]): number => {
 
   features.forEach((feature) => {
     const geometry = feature.getGeometry();
+
     totalLength += getSafeLength(geometry);
   });
 

@@ -1,8 +1,9 @@
-"use client";
+'use client';
 
-import { Image } from "@heroui/image";
-import { ArrowRightIcon } from "@/components/icons";
-import { useRouter } from "next/navigation";
+import { Image } from '@heroui/image';
+import { useRouter } from 'next/navigation';
+
+import { ArrowRightIcon } from '@/components/icons';
 
 export default function Home() {
   const router = useRouter();
@@ -12,11 +13,11 @@ export default function Home() {
       <div className="max-w-6xl mx-auto w-full">
         <h1 className="pb-6 md:pb-12 lg:pb-16">
           <Image
-            height={120}
-            width={120}
-            src="/logo.png"
-            className="md:h-[180px] md:w-[180px] lg:h-[220px] lg:w-[220px]"
             alt="UCLM Logo"
+            className="md:h-[180px] md:w-[180px] lg:h-[220px] lg:w-[220px]"
+            height={120}
+            src="/logo.png"
+            width={120}
           />
         </h1>
 
@@ -33,8 +34,8 @@ export default function Home() {
 
         <div className="pt-10 md:pt-14 lg:pt-20">
           <button
-            onClick={() => router.push("/navigation")}
             className="relative px-8 py-4 sm:px-10 sm:py-5 md:px-12 md:py-6 rounded-xl border-3 border-white text-white font-bold text-xl md:text-2xl lg:text-3xl flex items-center gap-3 md:gap-4 overflow-hidden group transition-all duration-500 hover:shadow-[0px_0px_30px_10px_rgba(255,255,255,0.7)] md:hover:shadow-[0px_0px_50px_15px_rgba(255,255,255,0.8)]"
+            onClick={() => router.push('/navigation')}
           >
             <span className="relative z-20 flex items-center gap-2 md:gap-3 transition-all duration-500 ease-out group-hover:-translate-y-full group-hover:opacity-0">
               GET STARTED
