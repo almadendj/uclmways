@@ -48,6 +48,7 @@ import DestinationSelector from './DestinationSelector';
 import { useKioskRouteManager } from './qrCodeUtils';
 import KioskQRModal from './KioskQRModal';
 import RouteOverlay from './RouteOverlay';
+import Image from 'next/image';
 
 const CampusMap: React.FC<MapProps> = ({
   mapUrl = '/UCLM_Map.geojson',
@@ -1730,94 +1731,106 @@ const CampusMap: React.FC<MapProps> = ({
             </div>
 
             {isMobileMenuOpen && (
-              <div className="p-4 max-h-60 overflow-y-auto">
-                <h3 className="font-bold mb-4 text-gray-900">
-                  Step-by-Step Directions
-                </h3>
+              <div className="w-full flex flex-col-reverse md:flex-row justify-center items-center">
+                <div className="p-4 max-h-60 overflow-y-auto">
+                  <h3 className="font-bold mb-4 text-gray-900">
+                    Step-by-Step Directions
+                  </h3>
 
-                <ul className="space-y-4">
-                  <li className="flex items-start">
-                    <div className="w-8 h-8 rounded-full bg-green-100 text-green-600 flex items-center justify-center mr-3 flex-shrink-0">
-                      <svg
-                        fill="none"
-                        height="16"
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        viewBox="0 0 24 24"
-                        width="16"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path d="M22 10L12 2 2 10" />
-                        <path d="M12 2v20" />
-                      </svg>
-                    </div>
-                    <div>
-                      <p className="font-medium text-gray-900">
-                        Start at {currentLocation?.name || 'current location'}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        Head toward {selectedDestination.name}
-                      </p>
-                    </div>
-                  </li>
+                  <ul className="space-y-4">
+                    <li className="flex items-start">
+                      <div className="w-8 h-8 rounded-full bg-green-100 text-green-600 flex items-center justify-center mr-3 flex-shrink-0">
+                        <svg
+                          fill="none"
+                          height="16"
+                          stroke="currentColor"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          viewBox="0 0 24 24"
+                          width="16"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path d="M22 10L12 2 2 10" />
+                          <path d="M12 2v20" />
+                        </svg>
+                      </div>
+                      <div>
+                        <p className="font-medium text-gray-900">
+                          Start at {currentLocation?.name || 'current location'}
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          Head toward {selectedDestination.name}
+                        </p>
+                      </div>
+                    </li>
 
-                  <li className="flex items-start">
-                    <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center mr-3 flex-shrink-0">
-                      <svg
-                        fill="none"
-                        height="16"
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        viewBox="0 0 24 24"
-                        width="16"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <polyline points="9 18 15 12 9 6" />
-                      </svg>
-                    </div>
-                    <div>
-                      <p className="font-medium text-gray-900">
-                        Continue straight
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        {routeInfo?.distance
-                          ? `${Math.round(routeInfo.distance * 0.4)}m`
-                          : '100m'}
-                      </p>
-                    </div>
-                  </li>
+                    <li className="flex items-start">
+                      <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center mr-3 flex-shrink-0">
+                        <svg
+                          fill="none"
+                          height="16"
+                          stroke="currentColor"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          viewBox="0 0 24 24"
+                          width="16"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <polyline points="9 18 15 12 9 6" />
+                        </svg>
+                      </div>
+                      <div>
+                        <p className="font-medium text-gray-900">
+                          Continue straight
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          {routeInfo?.distance
+                            ? `${Math.round(routeInfo.distance * 0.4)}m`
+                            : '100m'}
+                        </p>
+                      </div>
+                    </li>
 
-                  <li className="flex items-start">
-                    <div className="w-8 h-8 rounded-full bg-red-100 text-red-600 flex items-center justify-center mr-3 flex-shrink-0">
-                      <svg
-                        fill="none"
-                        height="16"
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        viewBox="0 0 24 24"
-                        width="16"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                        <circle cx="12" cy="10" r="3" />
-                      </svg>
-                    </div>
-                    <div>
-                      <p className="font-medium text-gray-900">
-                        Arrive at {selectedDestination.name}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        Your destination will be on the right
-                      </p>
-                    </div>
-                  </li>
-                </ul>
+                    <li className="flex items-start">
+                      <div className="w-8 h-8 rounded-full bg-red-100 text-red-600 flex items-center justify-center mr-3 flex-shrink-0">
+                        <svg
+                          fill="none"
+                          height="16"
+                          stroke="currentColor"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          viewBox="0 0 24 24"
+                          width="16"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                          <circle cx="12" cy="10" r="3" />
+                        </svg>
+                      </div>
+                      <div>
+                        <p className="font-medium text-gray-900">
+                          Arrive at {selectedDestination.name}
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          Your destination will be on the right
+                        </p>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+                {!!selectedDestination?.imageUrl && (
+                  <div>
+                    <Image
+                      width={500}
+                      height={500}
+                      src={`/${selectedDestination.imageUrl}.jpg`}
+                      alt="annex-building"
+                    />
+                  </div>
+                )}
               </div>
             )}
           </div>

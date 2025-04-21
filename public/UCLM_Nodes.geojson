@@ -8,7 +8,8 @@
         "name": "Old Building Entrance",
         "isDestination": true,
         "category": "Main Buildings",
-        "description": "Main entrance to the Old Building"
+        "description": "Main entrance to the Old Building",
+        "imageName": "old building"
       },
       "geometry": {
         "coordinates": [123.95337867934211, 10.325185190652974],
@@ -22,7 +23,8 @@
         "name": "SH Building Entrance",
         "isDestination": true,
         "category": "Main Buildings",
-        "description": "Main entrance to SH Building"
+        "description": "Main entrance to SH Building",
+        "imageName": "annex"
       },
       "geometry": {
         "coordinates": [123.95402776816132, 10.325133613677977],
@@ -50,7 +52,8 @@
         "name": "Maritime Building Entrance",
         "isDestination": true,
         "category": "Maritime",
-        "description": "Main entrance to Maritime Building"
+        "description": "Main entrance to Maritime Building",
+        "imageName": "maritime pathway"
       },
       "geometry": {
         "coordinates": [123.95483491429235, 10.326178768097321],
@@ -78,7 +81,8 @@
         "name": "Covered Court",
         "isDestination": true,
         "category": "Sports Facilities",
-        "description": "Indoor sports facility"
+        "description": "Indoor sports facility",
+        "imageName": "pathway to covered court"
       },
       "geometry": {
         "coordinates": [123.95473848062397, 10.32659834873732],

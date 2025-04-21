@@ -54,7 +54,7 @@ export const useRouteProcessor = (
         coordinates: geoCoords,
         category: feature.get('category'),
         description: feature.get('description'),
-        imageUrl: feature.get('imageUrl'),
+        imageUrl: feature.get('imageName'),
       };
     },
     []
